@@ -1,4 +1,4 @@
-package com.ysl.andstepone;
+package com.ysl.stepone;
 
 import org.junit.Test;
 

@@ -1,11 +1,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ysl.andstepone">
+    package="com.ysl.stepone">
 
     <application
+        android:name="com.ysl.stepone.STApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" />
+        android:theme="@style/AppTheme"
+        >
+
+        <activity android:name=".activity.SplashAcitivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <category android:name="android.intent.category.LAUNCHER" />
+                <!--<data android:scheme="abc"-->
+                    <!--android:host="ysl"-->
+                    <!--/>-->
+            </intent-filter>
+        </activity>
+
+    </application>
 </manifest>
