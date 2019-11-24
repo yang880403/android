@@ -2,11 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:height="55dp"
+        android:gravity="center"
+        android:text="头部"
+        />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
 
-        android:textColor="@color/colorAccent"
         android:text="启动中.."/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:height="55dp"
+        android:gravity="center"
+        android:text="底部"
+        android:textSize="28sp"
+        />
 
 </RelativeLayout>
