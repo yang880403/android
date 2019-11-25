@@ -5,8 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,8 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class AbsSTActivity extends AppCompatActivity {
     private ViewGroup mContentParent;
-    private Toolbar mToolbar;
-    private TextView mTitleTextView;
+    private AppBar mAppBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,11 +25,8 @@ public class AbsSTActivity extends AppCompatActivity {
         setTheme(R.style.STAppTheme);
         super.setContentView(R.layout.abs_st_activity);
 
-        mToolbar = findViewById(R.id.abs_st_toolbar);
-        mToolbar.setTitle("");
-        setActionBar(mToolbar);
+        mAppBar = findViewById(R.id.abs_st_appbar);
         mContentParent = findViewById(R.id.abs_st_content);
-        mTitleTextView = findViewById(R.id.abs_st_title_textview);
         setAppbarBackgroundColor(Color.WHITE, Color.BLACK);
     }
 
@@ -58,11 +52,11 @@ public class AbsSTActivity extends AppCompatActivity {
      */
 
     public void setPageTitle(String pageTitle) {
-        mTitleTextView.setText(pageTitle);
+        mAppBar.setTitle(pageTitle);
     }
 
     public void setPageTitleColor(int color) {
-        mTitleTextView.setTextColor(color);
+        mAppBar.setTitleColor(color);
     }
 
     public void setPageTitleView(int layoutResID) {
@@ -73,7 +67,7 @@ public class AbsSTActivity extends AppCompatActivity {
      * 沉浸模式
      */
     public void setAppBarBackgroundColor(int color) {
-        mToolbar.setBackgroundColor(color);
+        mAppBar.setBackgroundColor(color);
         setStatusBarBackgroundColor(color);
     }
 
@@ -81,7 +75,7 @@ public class AbsSTActivity extends AppCompatActivity {
      * MD模式
      */
     public void setAppbarBackgroundColor(int appBarColor, int statusBarColor) {
-        mToolbar.setBackgroundColor(appBarColor);
+        mAppBar.setBackgroundColor(appBarColor);
         setStatusBarBackgroundColor(statusBarColor);
     }
 

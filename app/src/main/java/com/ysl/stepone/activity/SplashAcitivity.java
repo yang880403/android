@@ -1,5 +1,6 @@
 package com.ysl.stepone.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.stepone.uikit.AbsSTActivity;
@@ -21,7 +22,7 @@ public class SplashAcitivity extends AbsSTActivity {
 //        setAppBarBackgroundColor(Color.BLUE);
         setContentView(R.layout.activity_splash);
 
-//        setStatusBarBackgroundColor(Color.RED);
+//        setStatusBarBackgroundColor(Color.WHITE);
 //        setFullscreen();
 //        setDarkModeStatusBar();
     }

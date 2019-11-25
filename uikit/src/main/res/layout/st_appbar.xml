@@ -7,14 +7,17 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:src="@mipmap/back_icon"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
         />
 
     <TextView
         android:id="@+id/st_appbar_titleview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        tools:text="title"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        tools:text="TITLE"
         />
 </merge>

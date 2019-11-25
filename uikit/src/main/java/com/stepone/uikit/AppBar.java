@@ -2,11 +2,14 @@ package com.stepone.uikit;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.security.PublicKey;
 
 /**
  * FileName: AppBar
@@ -25,6 +28,18 @@ public class AppBar extends RelativeLayout {
         leftView = findViewById(R.id.st_appbar_leftview);
         titleView = findViewById(R.id.st_appbar_titleview);
 
-//        TypedArray attributes = context.obtainStyledAttributes(attrs)
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.STAppBar);
+        titleView.setTextColor(attributes.getColor(R.styleable.STAppBar_stTitleColor, Color.BLACK));
+//        titleView.setTextSize(attributes.getDimension(R.styleable.STAppBar_stTitleSize, 17));
+
+        attributes.recycle();
+    }
+
+    public void setTitle(String title) {
+        titleView.setText(title);
+    }
+
+    public void setTitleColor(int color) {
+        titleView.setTextColor(color);
     }
 }
