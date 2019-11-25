@@ -3,7 +3,6 @@
     <!-- Base activity theme. -->
     <style name="STAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-
     </style>
 
 </resources>
