@@ -29,6 +29,7 @@ public class AppBar extends RelativeLayout {
         titleView = findViewById(R.id.st_appbar_titleview);
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.STAppBar);
+        titleView.setText(attributes.getString(R.styleable.STAppBar_stTitle));
         titleView.setTextColor(attributes.getColor(R.styleable.STAppBar_stTitleColor, Color.BLACK));
 //        titleView.setTextSize(attributes.getDimension(R.styleable.STAppBar_stTitleSize, 17));
 

@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".AbsSTActivity">
 
     <com.stepone.uikit.AppBar
         android:id="@+id/abs_st_appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/appbarHeight"
-        app:stTitleColor="@color/colorAccent"
-        tools:background="@color/colorPrimary" />
+        app:stTitleSize="@dimen/appBarTitleSize"
+        tools:stTitleColor="@color/colorAccent"
+        tools:background="@color/colorPrimary"
+        tools:stTitle="TITLE"/>
 
     <FrameLayout
         android:id="@+id/abs_st_content"
