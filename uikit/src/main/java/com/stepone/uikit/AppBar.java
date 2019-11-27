@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.security.PublicKey;
-
 /**
  * FileName: AppBar
  * Author: y.liang
