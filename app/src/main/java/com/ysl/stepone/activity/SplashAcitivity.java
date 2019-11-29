@@ -1,11 +1,10 @@
 package com.ysl.stepone.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.stepone.uikit.AbsSTActivity;
 import com.ysl.stepone.R;
-import com.ysl.stepone.fragment.SplashFragment;
+import com.ysl.stepone.fragment.SplashViewContainer;
 
 /**
  * Copyright (C), 2015-2019, Shanghai Keking Technology Group Co., Ltd.
@@ -21,7 +20,7 @@ public class SplashAcitivity extends AbsSTActivity {
 
         setPageTitle("标题");
 
-        getSupportFragmentManager().beginTransaction().add(R.id.abs_st_content, new SplashFragment(), SplashAcitivity.class.toString()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.abs_st_content, new SplashViewContainer(), SplashAcitivity.class.toString()).commit();
 //        setAppBarBackgroundColor(Color.BLUE);
 //        setContentView(R.layout.activity_splash);
 
