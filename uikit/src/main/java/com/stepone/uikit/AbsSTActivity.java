@@ -26,32 +26,38 @@ public class AbsSTActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setTheme(R.style.STAppTheme);
-        super.setContentView(R.layout.abs_st_activity);
+        super.setContentView(R.layout.st_uikit_abs_activity);
 
-        mAppBar = findViewById(R.id.abs_st_appbar);
-        mContentParent = findViewById(R.id.abs_st_content);
+        mAppBar = findViewById(R.id.st_uikit_abs_appbar);
+        mContentParent = findViewById(R.id.st_uikit_abs_content);
+        mLoadingContentParent = findViewById(R.id.st_uikit_abs_loading_content);
 
-        mLoadingContentParent = findViewById(R.id.abs_st_loading_content);
-        setLoadingView(R.layout.st_default_loading_view);
-
+        setLoadingView(R.layout.st_uikit_default_loading_view);
         setAppbarBackgroundColor(Color.WHITE, Color.BLACK);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         if (mContentParent != null) {
+            mContentParent.removeAllViews();
             getLayoutInflater().inflate(layoutResID, mContentParent);
         }
     }
 
     @Override
     public void setContentView(View view) {
-        super.setContentView(view);
+        if (mContentParent != null) {
+            mContentParent.removeAllViews();
+            mContentParent.addView(view);
+        }
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-
+        if (mContentParent != null) {
+            mContentParent.removeAllViews();
+            mContentParent.addView(view, params);
+        }
     }
 
     /**
@@ -119,12 +125,15 @@ public class AbsSTActivity extends AppCompatActivity {
             mLoadingContentParent.removeAllViews();
             getLayoutInflater().inflate(layoutResID, mLoadingContentParent);
 
-            mLoadingTextView = findViewById(R.id.st_loading_textview);
+            mLoadingTextView = findViewById(R.id.st_uikit_loading_view_textview);
         }
     }
 
     public void startLoading() {
-        mLoadingContentParent.setVisibility(View.VISIBLE);
+        if (mLoadingContentParent != null) {
+            mLoadingContentParent.setVisibility(View.VISIBLE);
+        }
+
         if (mLoadingTextView != null) {
             mLoadingTextView.setText("");
             mLoadingTextView.setVisibility(View.GONE);
@@ -132,7 +141,10 @@ public class AbsSTActivity extends AppCompatActivity {
     }
 
     public void startLoading(String text) {
-        mLoadingContentParent.setVisibility(View.VISIBLE);
+        if (mLoadingContentParent != null) {
+            mLoadingContentParent.setVisibility(View.VISIBLE);
+        }
+
         if (mLoadingTextView != null && text != null && !text.isEmpty()) {
             mLoadingTextView.setText(text);
             mLoadingTextView.setVisibility(View.VISIBLE);
@@ -140,6 +152,8 @@ public class AbsSTActivity extends AppCompatActivity {
     }
 
     public void stopLoading() {
-        mLoadingContentParent.setVisibility(View.GONE);
+        if (mLoadingContentParent != null) {
+            mLoadingContentParent.setVisibility(View.GONE);
+        }
     }
 }
