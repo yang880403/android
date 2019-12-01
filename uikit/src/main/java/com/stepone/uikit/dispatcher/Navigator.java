@@ -7,8 +7,32 @@ package com.stepone.uikit.dispatcher;
  */
 
 
+import android.app.Application;
+
+import com.stepone.uikit.dispatcher.request.Request;
+
 /**
- * 搜集参数，根据RouterMap进行导航
+ * API provider
  */
-public class Navigator {
+final public class Navigator {
+    private static NavigatorContext navigator() {
+        return NavigatorContext.getInstance();
+    }
+
+    public static boolean init(Application application) {
+        return NavigatorContext.init(application);
+    }
+
+
+    public static Request startOpenURL(String url) {
+        return navigator().startOpenURL(url);
+    }
+
+    public static Request startOpenID(String targetId) {
+        return navigator().startOpenID(targetId);
+    }
+
+    public static void call(Request request) {
+        navigator().call(request);
+    }
 }

@@ -23,8 +23,8 @@ public class AppBar extends RelativeLayout {
     public AppBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.st_uikit_appbar, this);
-        leftView = findViewById(R.id.st_appbar_leftview);
-        titleView = findViewById(R.id.st_appbar_titleview);
+        leftView = findViewById(R.id.st_uikit_appbar_leftview);
+        titleView = findViewById(R.id.st_uikit_appbar_titleview);
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.STAppBar);
         titleView.setText(attributes.getString(R.styleable.STAppBar_stTitle));

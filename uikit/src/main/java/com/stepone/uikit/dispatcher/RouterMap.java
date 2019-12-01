@@ -6,6 +6,9 @@ package com.stepone.uikit.dispatcher;
  * Date: 2019-11-29 17:02
  */
 
-public class RouterMap {
+final public class RouterMap {
+    public class Entry {
+
+    }
 
 }
