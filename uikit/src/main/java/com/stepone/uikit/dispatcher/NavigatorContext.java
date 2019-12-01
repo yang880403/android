@@ -10,13 +10,10 @@ package com.stepone.uikit.dispatcher;
 import android.app.Application;
 import android.net.Uri;
 
+import com.stepone.uikit.dispatcher.interceptor.InterceptorCenter;
 import com.stepone.uikit.dispatcher.request.BackRequest;
-import com.stepone.uikit.dispatcher.request.CustomRequest;
-import com.stepone.uikit.dispatcher.request.InvokeRequest;
 import com.stepone.uikit.dispatcher.request.PushRequest;
 import com.stepone.uikit.dispatcher.request.Request;
-
-import java.util.List;
 
 /**
  * 搜集参数，根据RouterMap等构建完整Request，根据requestType，选择选择不同的拦截器进行拦截
@@ -63,27 +60,8 @@ final class NavigatorContext {
         if (request != null) {
             request.from(mContext);
 
-            if (request instanceof PushRequest) {
-                List<Interceptor<PushRequest>> interceptors = InterceptorCenter.getPushInterceptor(request.getGroupId());
-                if (interceptors != null) {
-                    new Interceptor.Chain<>(interceptors, (PushRequest) request).proceed();
-                }
-            } else if (request instanceof BackRequest) {
-                List<Interceptor<BackRequest>> interceptors = InterceptorCenter.getBackInterceptor(request.getGroupId());
-                if (interceptors != null) {
-                    new Interceptor.Chain<>(interceptors, (BackRequest) request).proceed();
-                }
-            } else if (request instanceof InvokeRequest) {
-                List<Interceptor<InvokeRequest>> interceptors = InterceptorCenter.getInvokeInterceptor(request.getGroupId());
-                if (interceptors != null) {
-                    new Interceptor.Chain<>(interceptors, (InvokeRequest) request).proceed();
-                }
-            } else if (request instanceof CustomRequest) {
-                List<Interceptor<CustomRequest>> interceptors = InterceptorCenter.getCustomInterceptor(request.getGroupId());
-                if (interceptors != null) {
-                    new Interceptor.Chain<>(interceptors, (CustomRequest) request).proceed();
-                }
-            }
+            //开启拦截器
+            InterceptorCenter.callRequest(request);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.stepone.uikit.dispatcher;
+package com.stepone.uikit.dispatcher.interceptor;
 
 import androidx.annotation.NonNull;
 

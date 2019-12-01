@@ -1,4 +1,6 @@
-package com.stepone.uikit.dispatcher;
+package com.stepone.uikit.dispatcher.interceptor;
+
+import androidx.annotation.NonNull;
 
 import com.stepone.uikit.dispatcher.request.BackRequest;
 import com.stepone.uikit.dispatcher.request.CustomRequest;
@@ -17,8 +19,14 @@ import java.util.Map;
  * Date: 2019-12-01 19:26
  */
 public abstract class InterceptorCenter<T extends Request> {
-    //根据groupID分组存储拦截器
+    /**
+     * 根据groupID分组存储拦截器，用户可以自定义拦截逻辑
+     */
     private final Map<String, List<Interceptor<T>>> mInterceptorMap = new HashMap<>();
+
+    /**
+     * 默认拦截器，用来实现基本业务逻辑，用户不可控制
+     */
     protected final List<Interceptor<T>> mDefaultInterceptors = new ArrayList<>(10);
 
     InterceptorCenter() {
@@ -49,6 +57,13 @@ public abstract class InterceptorCenter<T extends Request> {
         return interceptors;
     }
 
+    protected void call(@NonNull T request) {
+        List<Interceptor<T>> interceptors = getInterceptors(request.getGroupId());
+        if (interceptors != null) {
+            new Interceptor.Chain<>(interceptors, request).proceed();
+        }
+    }
+
     abstract protected void constructDefaultInterceptors();
 
 
@@ -59,29 +74,29 @@ public abstract class InterceptorCenter<T extends Request> {
     public static void addPushInterceptor(Interceptor<PushRequest> interceptor, String groupId) {
         PushInterceptorCenter.getInstance().addInterceptor(interceptor, groupId);
     }
-    public static List<Interceptor<PushRequest>> getPushInterceptor(String groupId) {
-        return PushInterceptorCenter.getInstance().getInterceptors(groupId);
-    }
 
     public static void addBackInterceptor(Interceptor<BackRequest> interceptor, String groupId) {
         BackInterceptorCenter.getInstance().addInterceptor(interceptor, groupId);
-    }
-    public static List<Interceptor<BackRequest>> getBackInterceptor(String groupId) {
-        return BackInterceptorCenter.getInstance().getInterceptors(groupId);
     }
 
     public static void addInvokeInterceptor(Interceptor<InvokeRequest> interceptor, String groupId) {
         InvokeInterceptorCenter.getInstance().addInterceptor(interceptor, groupId);
     }
-    public static List<Interceptor<InvokeRequest>> getInvokeInterceptor(String groupId) {
-        return InvokeInterceptorCenter.getInstance().getInterceptors(groupId);
-    }
 
     public static void addCustomInterceptor(Interceptor<CustomRequest> interceptor, String groupId) {
         CustomInterceptorCenter.getInstance().addInterceptor(interceptor, groupId);
     }
-    public static List<Interceptor<CustomRequest>> getCustomInterceptor(String groupId) {
-        return CustomInterceptorCenter.getInstance().getInterceptors(groupId);
+
+    public static void callRequest(@NonNull Request request) {
+        if (request instanceof PushRequest) {
+            PushInterceptorCenter.getInstance().call((PushRequest) request);
+        } else if (request instanceof BackRequest) {
+            BackInterceptorCenter.getInstance().call((BackRequest) request);
+        } else if (request instanceof InvokeRequest) {
+            InvokeInterceptorCenter.getInstance().call((InvokeRequest) request);
+        } else if (request instanceof CustomRequest) {
+            CustomInterceptorCenter.getInstance().call((CustomRequest) request);
+        }
     }
 
     /**
