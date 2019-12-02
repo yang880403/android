@@ -8,33 +8,17 @@ import android.net.Uri;
  * Date: 2019-12-01 11:25
  */
 public final class PushRequest extends Request {
-    private Uri targetUri;
 
     public PushRequest(Uri uri) {
-        this.targetUri = uri;
+        setUri(uri);
     }
 
     public PushRequest(String path) {
-        super(path);
+        setPath(path);
     }
 
     @Override
-    public int requestType() {
-        return Type.PUSH;
-    }
-
-    public void push() {
-        call();
-    }
-
-    /**
-     * getter and setter
-     */
-    public Uri getTargetUri() {
-        return targetUri;
-    }
-
-    public void setTargetUri(Uri targetUri) {
-        this.targetUri = targetUri;
+    public boolean isValid() {
+        return getContext() != null && getPayload() != null;
     }
 }

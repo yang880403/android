@@ -9,8 +9,6 @@ package com.stepone.uikit.dispatcher;
 
 import android.app.Application;
 
-import com.stepone.uikit.dispatcher.request.BackRequest;
-import com.stepone.uikit.dispatcher.request.PushRequest;
 import com.stepone.uikit.dispatcher.request.Request;
 
 /**
@@ -26,16 +24,20 @@ final public class Navigator {
     }
 
 
-    public static PushRequest startOpenURL(String url) {
+    public static Request startOpenURL(String url) {
         return navigator().startOpenURL(url);
     }
 
-    public static PushRequest startOpenPath(String path) {
+    public static Request startOpenPath(String path) {
         return navigator().startOpenPath(path);
     }
 
-    public static BackRequest startGoBack() {
+    public static Request startGoBack() {
         return navigator().startGoBack();
+    }
+
+    public static Request startGoBack(int step) {
+        return navigator().startGoBack(step);
     }
 
     public static void call(Request request) {

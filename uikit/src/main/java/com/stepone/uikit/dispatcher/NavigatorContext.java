@@ -44,16 +44,20 @@ final class NavigatorContext {
     /**
      * 构造请求
      */
-    PushRequest startOpenURL(String url) {
+    Request startOpenURL(String url) {
         return new PushRequest(Uri.parse(url));
     }
 
-    PushRequest startOpenPath(String path) {
+    Request startOpenPath(String path) {
         return new PushRequest(path);
     }
 
-    BackRequest startGoBack() {
+    Request startGoBack() {
         return new BackRequest();
+    }
+
+    Request startGoBack(int backStep) {
+        return new BackRequest(backStep);
     }
 
     /**
@@ -61,12 +65,13 @@ final class NavigatorContext {
      */
     void call(Request request) {
         if (request != null) {
-            request.setContext(mContext);
+            RouterMap.Entry entry = RouterMap.getRouter(request.getPath(), request.getGroup());
 
-            RouterMap.Entry entry = RouterMap.getRouter(request.getPath(), request.getGroupId());
-            request.setPayload(entry);
+            if (entry == null) {
+                entry = RouterMap.parseUri(request.getUri());
+            }
             //开启拦截器
-            if (request.isValid()) {
+            if (request.from(mContext).fillEntry(entry).isValid()) {
                 InterceptorCenter.callRequest(request);
             }
         }

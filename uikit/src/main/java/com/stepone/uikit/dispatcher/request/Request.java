@@ -1,6 +1,7 @@
 package com.stepone.uikit.dispatcher.request;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.stepone.uikit.dispatcher.Navigator;
@@ -24,36 +25,27 @@ public abstract class Request {
     private Bundle bundle;
     private Callback callback;
 
-    private String groupId;//根据分组查询路由，默认分组为空字符串
+    private String group;//根据分组查询路由，默认分组为空字符串
     private String path;
     private RouterMap.Entry payload;
+
+    private Uri uri;
 
     public interface Callback {
         void onLost(Request request);
     }
 
-    public final static class Type {
-        public final static int PUSH = 0;
-        public final static int BACK = 1;
-        public final static int INVOKE = 2;
-        public final static int CUSTOM = 3;
+    protected Request() {
+        this.bundle = new Bundle();
     }
 
-    protected Request(String path) {
-        this.path = path;
-    }
-
-    protected Request() {}
-
-    protected void call() {
+    public void call() {
         Navigator.call(this);
     }
 
     public boolean isValid() {
         return true;
     }
-
-    abstract public int requestType();
 
     /**
      * getter && setter
@@ -74,12 +66,20 @@ public abstract class Request {
         this.path = path;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGroup() {
+        return group;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     public Bundle getBundle() {
@@ -87,7 +87,9 @@ public abstract class Request {
     }
 
     public void setBundle(Bundle bundle) {
-        this.bundle = bundle;
+        if (bundle != null) {
+            this.bundle = bundle;
+        }
     }
 
     public RouterMap.Entry getPayload() {
@@ -116,8 +118,13 @@ public abstract class Request {
         return this;
     }
 
+    public Request fillEntry(RouterMap.Entry entry) {
+        this.payload = entry;
+        return this;
+    }
+
     public Request withGroup(String group) {
-        this.groupId = group;
+        this.group = group;
         return this;
     }
 

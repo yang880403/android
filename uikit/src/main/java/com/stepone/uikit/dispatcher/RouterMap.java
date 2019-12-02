@@ -1,5 +1,7 @@
 package com.stepone.uikit.dispatcher;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import java.util.HashMap;
@@ -30,6 +32,10 @@ final public class RouterMap {
         }
 
         return mRouterMaps.get(group == null ? "" : group).get(path);
+    }
+
+    static Entry parseUri(Uri uri) {
+        return null;
     }
 
 

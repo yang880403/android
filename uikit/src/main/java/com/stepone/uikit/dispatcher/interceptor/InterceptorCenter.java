@@ -61,7 +61,7 @@ public abstract class InterceptorCenter<T extends Request> {
     }
 
     void call(@NonNull T request) {
-        List<Interceptor<T>> interceptors = getInterceptors(request.getGroupId());
+        List<Interceptor<T>> interceptors = getInterceptors(request.getGroup());
         if (interceptors != null) {
             new Interceptor.Chain<>(interceptors, request).proceed();
         }

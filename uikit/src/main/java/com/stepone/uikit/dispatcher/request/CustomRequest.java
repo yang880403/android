@@ -6,12 +6,5 @@ package com.stepone.uikit.dispatcher.request;
  * Date: 2019-12-01 23:30
  */
 public class CustomRequest extends Request {
-    @Override
-    public int requestType() {
-        return Type.CUSTOM;
-    }
-
-    public void call() {
-        super.call();
-    }
+    
 }
