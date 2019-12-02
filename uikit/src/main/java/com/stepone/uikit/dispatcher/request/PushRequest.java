@@ -14,8 +14,8 @@ public final class PushRequest extends Request {
         this.targetUri = uri;
     }
 
-    public PushRequest(String targetId) {
-        super(targetId);
+    public PushRequest(String path) {
+        super(path);
     }
 
     @Override

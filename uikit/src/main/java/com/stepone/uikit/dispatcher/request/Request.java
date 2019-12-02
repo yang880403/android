@@ -25,7 +25,7 @@ public abstract class Request {
     private Callback callback;
 
     private String groupId;//根据分组查询路由，默认分组为空字符串
-    private String payloadId;
+    private String path;
     private RouterMap.Entry payload;
 
     public interface Callback {
@@ -39,14 +39,18 @@ public abstract class Request {
         public final static int CUSTOM = 3;
     }
 
-    protected Request(String targetId) {
-        this.payloadId = targetId;
+    protected Request(String path) {
+        this.path = path;
     }
 
     protected Request() {}
 
     protected void call() {
         Navigator.call(this);
+    }
+
+    public boolean isValid() {
+        return true;
     }
 
     abstract public int requestType();
@@ -62,12 +66,12 @@ public abstract class Request {
         this.context = context;
     }
 
-    public String getPayloadId() {
-        return payloadId;
+    public String getPath() {
+        return path;
     }
 
-    public void setPayloadId(String payloadId) {
-        this.payloadId = payloadId;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getGroupId() {

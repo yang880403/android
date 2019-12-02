@@ -27,13 +27,16 @@ public abstract class InterceptorCenter<T extends Request> {
     /**
      * 默认拦截器，用来实现基本业务逻辑，用户不可控制
      */
-    protected final List<Interceptor<T>> mDefaultInterceptors = new ArrayList<>(10);
+    private final List<Interceptor<T>> mDefaultInterceptors = new ArrayList<>(10);
 
     InterceptorCenter() {
-        constructDefaultInterceptors();
+        List<Interceptor<T>> list = constructDefaultInterceptors();
+        if (list != null) {
+            mDefaultInterceptors.addAll(list);
+        }
     }
 
-    synchronized protected void addInterceptor(Interceptor<T> interceptor, String groupId) {
+    synchronized void addInterceptor(Interceptor<T> interceptor, String groupId) {
         if (interceptor != null) {
             String key = groupId == null ? "" : groupId;
             List<Interceptor<T>> interceptorList = mInterceptorMap.get(key);
@@ -47,7 +50,7 @@ public abstract class InterceptorCenter<T extends Request> {
         }
     }
 
-    synchronized protected List<Interceptor<T>> getInterceptors(String groupId) {
+    synchronized private List<Interceptor<T>> getInterceptors(String groupId) {
         List<Interceptor<T>> interceptors = new ArrayList<>(mDefaultInterceptors);
         List<Interceptor<T>> list = mInterceptorMap.get(groupId == null ? "" : groupId);
         if (list != null && !list.isEmpty()) {
@@ -57,14 +60,14 @@ public abstract class InterceptorCenter<T extends Request> {
         return interceptors;
     }
 
-    protected void call(@NonNull T request) {
+    void call(@NonNull T request) {
         List<Interceptor<T>> interceptors = getInterceptors(request.getGroupId());
         if (interceptors != null) {
             new Interceptor.Chain<>(interceptors, request).proceed();
         }
     }
 
-    abstract protected void constructDefaultInterceptors();
+    abstract protected List<Interceptor<T>> constructDefaultInterceptors();
 
 
     /**
@@ -96,104 +99,6 @@ public abstract class InterceptorCenter<T extends Request> {
             InvokeInterceptorCenter.getInstance().call((InvokeRequest) request);
         } else if (request instanceof CustomRequest) {
             CustomInterceptorCenter.getInstance().call((CustomRequest) request);
-        }
-    }
-
-    /**
-     * 派生类
-     */
-    private static class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
-        static PushInterceptorCenter instance = null;
-        static PushInterceptorCenter getInstance() {
-            if (instance == null) {
-                synchronized (PushInterceptorCenter.class) {
-                    if (instance == null) {
-                        instance = new PushInterceptorCenter();
-                    }
-                }
-            }
-
-            return instance;
-        }
-
-        @Override
-        protected void constructDefaultInterceptors() {
-            mDefaultInterceptors.add(new Interceptor<PushRequest>() {
-                @Override
-                public int priority() {
-                    return 0;
-                }
-
-                @Override
-                public String name() {
-                    return "name";
-                }
-
-                @Override
-                public void interceptor(Chain<PushRequest> chain) {
-
-                }
-            });
-        }
-    }
-
-    private static class BackInterceptorCenter extends InterceptorCenter<BackRequest> {
-        static BackInterceptorCenter instance = null;
-        static BackInterceptorCenter getInstance() {
-            if (instance == null) {
-                synchronized (BackInterceptorCenter.class) {
-                    if (instance == null) {
-                        instance = new BackInterceptorCenter();
-                    }
-                }
-            }
-
-            return instance;
-        }
-
-        @Override
-        protected void constructDefaultInterceptors() {
-
-        }
-    }
-
-    private static class InvokeInterceptorCenter extends InterceptorCenter<InvokeRequest> {
-        static InvokeInterceptorCenter instance = null;
-        static InvokeInterceptorCenter getInstance() {
-            if (instance == null) {
-                synchronized (InvokeInterceptorCenter.class) {
-                    if (instance == null) {
-                        instance = new InvokeInterceptorCenter();
-                    }
-                }
-            }
-
-            return instance;
-        }
-
-        @Override
-        protected void constructDefaultInterceptors() {
-
-        }
-    }
-
-    private static class CustomInterceptorCenter extends InterceptorCenter<CustomRequest> {
-        static CustomInterceptorCenter instance = null;
-        static CustomInterceptorCenter getInstance() {
-            if (instance == null) {
-                synchronized (CustomInterceptorCenter.class) {
-                    if (instance == null) {
-                        instance = new CustomInterceptorCenter();
-                    }
-                }
-            }
-
-            return instance;
-        }
-
-        @Override
-        protected void constructDefaultInterceptors() {
-
         }
     }
 }

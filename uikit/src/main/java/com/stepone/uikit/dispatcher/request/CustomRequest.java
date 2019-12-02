@@ -10,4 +10,8 @@ public class CustomRequest extends Request {
     public int requestType() {
         return Type.CUSTOM;
     }
+
+    public void call() {
+        super.call();
+    }
 }

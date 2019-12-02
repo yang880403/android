@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.stepone.uikit.AbsSTActivity;
 import com.stepone.uikit.AbsSTViewContainer;
+import com.stepone.uikit.dispatcher.Navigator;
 import com.ysl.stepone.R;
 import com.ysl.stepone.activity.SplashAcitivity;
 
@@ -30,10 +31,7 @@ public class SplashViewContainer extends AbsSTViewContainer {
         bottomView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), SplashAcitivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getSTActivity().startActivity(intent);
+                Navigator.startOpenPath("splash").push();
             }
         });
         return view;

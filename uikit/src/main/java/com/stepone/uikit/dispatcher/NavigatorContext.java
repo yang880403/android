@@ -44,24 +44,31 @@ final class NavigatorContext {
     /**
      * 构造请求
      */
-    Request startOpenURL(String url) {
+    PushRequest startOpenURL(String url) {
         return new PushRequest(Uri.parse(url));
     }
 
-    Request startOpenID(String targetId) {
-        return new PushRequest(targetId);
+    PushRequest startOpenPath(String path) {
+        return new PushRequest(path);
     }
 
-    Request startGoback() {
+    BackRequest startGoBack() {
         return new BackRequest();
     }
 
+    /**
+     * 开始路由
+     */
     void call(Request request) {
         if (request != null) {
-            request.from(mContext);
+            request.setContext(mContext);
 
+            RouterMap.Entry entry = RouterMap.getRouter(request.getPath(), request.getGroupId());
+            request.setPayload(entry);
             //开启拦截器
-            InterceptorCenter.callRequest(request);
+            if (request.isValid()) {
+                InterceptorCenter.callRequest(request);
+            }
         }
     }
 }

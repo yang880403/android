@@ -10,4 +10,8 @@ public final class InvokeRequest extends Request {
     public int requestType() {
         return Type.INVOKE;
     }
+
+    public void invoke() {
+        call();
+    }
 }
