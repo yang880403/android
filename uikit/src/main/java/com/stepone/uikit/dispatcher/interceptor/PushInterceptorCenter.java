@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.stepone.uikit.dispatcher.RouterMap;
 import com.stepone.uikit.dispatcher.request.PushRequest;
-import com.stepone.uikit.dispatcher.request.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +81,7 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
                         intent.putExtras(params);
                     }
 
-                    context.startActivity(intent, params);
+                    ActivityCompat.startActivity(context, intent, params);
                 }
             }
         }
