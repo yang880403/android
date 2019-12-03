@@ -57,23 +57,23 @@ final public class RouterMap {
         /**
          * 目标页面 @NonNull
          */
-        private Class pageClazz;
+        private Class targetClazz;
 
         /**
-         * 只有当pageClazz为Fragment的时候起作用
+         * 只有当targetClazz为Fragment的时候起作用
          */
-        private Class pageContainerClazz;
+        private Class parentClazz;
 
         /**
          * 安全级别
          */
-        private int security = Security.NONE;
+        private int security;
 
-        public Entry(@NonNull String group, @NonNull String path, @NonNull Class pageClazz, Class pageContainerClazz, int security) {
+        public Entry(@NonNull String group, @NonNull String path, @NonNull Class targetClazz, Class parentClazz, int security) {
             this.group = group;
             this.path = path;
-            this.pageClazz = pageClazz;
-            this.pageContainerClazz = pageContainerClazz;
+            this.targetClazz = targetClazz;
+            this.parentClazz = parentClazz;
             this.security = security;
         }
 
@@ -85,12 +85,12 @@ final public class RouterMap {
             return path;
         }
 
-        public Class getPageClazz() {
-            return pageClazz;
+        public Class getTargetClazz() {
+            return targetClazz;
         }
 
-        public Class getPageContainerClazz() {
-            return pageContainerClazz;
+        public Class getParentClazz() {
+            return parentClazz;
         }
 
         public int getSecurity() {

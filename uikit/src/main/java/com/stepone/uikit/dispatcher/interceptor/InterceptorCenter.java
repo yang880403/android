@@ -36,7 +36,7 @@ public abstract class InterceptorCenter<T extends Request> {
         }
     }
 
-    synchronized void addInterceptor(Interceptor<T> interceptor, String groupId) {
+    void addInterceptor(Interceptor<T> interceptor, String groupId) {
         if (interceptor != null) {
             String key = groupId == null ? "" : groupId;
             List<Interceptor<T>> interceptorList = mInterceptorMap.get(key);
@@ -50,7 +50,7 @@ public abstract class InterceptorCenter<T extends Request> {
         }
     }
 
-    synchronized private List<Interceptor<T>> getInterceptors(String groupId) {
+    private List<Interceptor<T>> getInterceptors(String groupId) {
         List<Interceptor<T>> interceptors = new ArrayList<>(mDefaultInterceptors);
         List<Interceptor<T>> list = mInterceptorMap.get(groupId == null ? "" : groupId);
         if (list != null && !list.isEmpty()) {
@@ -74,6 +74,9 @@ public abstract class InterceptorCenter<T extends Request> {
      * 工厂方法
      */
 
+    public static void addPushInterceptor(Interceptor<PushRequest> intercepter) {
+        addPushInterceptor(intercepter, null);
+    }
     public static void addPushInterceptor(Interceptor<PushRequest> interceptor, String groupId) {
         PushInterceptorCenter.getInstance().addInterceptor(interceptor, groupId);
     }

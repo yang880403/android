@@ -1,6 +1,7 @@
 package com.stepone.uikit.dispatcher.request;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,25 +22,48 @@ import com.stepone.uikit.dispatcher.RouterMap;
  */
 
 public abstract class Request {
+    /**
+     * request携带的上下文信息
+     */
     private Context context;
     private Bundle bundle;
-    private Callback callback;
+    private Observer observer;
+    private ResultCallback resultCallback;
 
+    /**
+     * 路由匹配的关键信息
+     */
     private String group;//根据分组查询路由，默认分组为空字符串
     private String path;
+
+    /**
+     * 匹配到的路由信息
+     */
     private RouterMap.Entry payload;
 
+    /**
+     * 通过解析uri，匹配到合适的路由
+     */
     private Uri uri;
 
-    public interface Callback {
+    public interface Observer {
         void onLost(Request request);
     }
 
-    protected Request() {
+    public interface ResultCallback {
+        void onResult(Intent intent);
+    }
+
+    Request() {
         this.bundle = new Bundle();
     }
 
     public void call() {
+        Navigator.call(this);
+    }
+
+    public void callForResult(ResultCallback callback) {
+        this.resultCallback = callback;
         Navigator.call(this);
     }
 
@@ -54,60 +78,67 @@ public abstract class Request {
         return context;
     }
 
-    public void setContext(Context context) {
+    void setContext(Context context) {
         this.context = context;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public Uri getUri() {
-        return uri;
-    }
-
-    public void setUri(Uri uri) {
-        this.uri = uri;
     }
 
     public Bundle getBundle() {
         return bundle;
     }
 
-    public void setBundle(Bundle bundle) {
+    void setBundle(Bundle bundle) {
         if (bundle != null) {
             this.bundle = bundle;
         }
+    }
+
+    public Observer getObserver() {
+        return observer;
+    }
+
+    void setObserver(Observer observer) {
+        this.observer = observer;
+    }
+
+    public ResultCallback getResultCallback() {
+        return resultCallback;
+    }
+
+    void setResultCallback(ResultCallback resultCallback) {
+        this.resultCallback = resultCallback;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    void setPath(String path) {
+        this.path = path;
     }
 
     public RouterMap.Entry getPayload() {
         return payload;
     }
 
-    public void setPayload(RouterMap.Entry payload) {
+    void setPayload(RouterMap.Entry payload) {
         this.payload = payload;
     }
 
-    public Callback getCallback() {
-        return callback;
+    public Uri getUri() {
+        return uri;
     }
 
-    public void setCallback(Callback callback) {
-        this.callback = callback;
+    void setUri(Uri uri) {
+        this.uri = uri;
     }
-
 
     /**
      * 链式调用方式设置参数
@@ -165,8 +196,8 @@ public abstract class Request {
         return this;
     }
 
-    public Request withCallback(Callback callback) {
-        this.callback = callback;
+    public Request withObserver(Observer observer) {
+        this.observer = observer;
         return this;
     }
 }

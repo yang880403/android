@@ -1,10 +1,11 @@
 package com.stepone.uikit.dispatcher.interceptor;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -59,29 +60,35 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
         public void interceptor(Chain<PushRequest> chain) {
             PushRequest request = chain.getRequest();
 
-            Context context = request.getContext();
+            final Context context = request.getContext();
             RouterMap.Entry entry = request.getPayload();
             if (context != null && entry != null) {
-                Class pageClazz = entry.getPageClazz();
+                Class pageClazz = entry.getTargetClazz();
                 if (pageClazz != null) {
                     Class activityClazz = null;
                     if (Fragment.class.isAssignableFrom(pageClazz)) {
-                        activityClazz = entry.getPageContainerClazz();
+                        activityClazz = entry.getParentClazz();
                     } else if (Activity.class.isAssignableFrom(pageClazz)) {
                         activityClazz = pageClazz;
                     }
 
-                    Intent intent = new Intent(context, activityClazz);
-                    if (context instanceof Application) {
+                    final Intent intent = new Intent(context, activityClazz);
+                    if (!(context instanceof Activity)) {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
 
-                    Bundle params = request.getBundle();
+                    final Bundle params = request.getBundle();
                     if (params != null) {
                         intent.putExtras(params);
                     }
 
-                    ActivityCompat.startActivity(context, intent, params);
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ActivityCompat.startActivity(context, intent, params);
+                        }
+                    });
+
                 }
             }
         }
