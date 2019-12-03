@@ -6,8 +6,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.stepone.uikit.AbsSTActivity;
-import com.stepone.uikit.dispatcher.Navigator;
+import com.stepone.uikit.view.AbsSTActivity;
+import com.stepone.component.navigator.Navigator;
 import com.ysl.stepone.R;
 
 /**
