@@ -8,6 +8,7 @@ package com.stepone.uikit.dispatcher;
 
 
 import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
 
 import com.stepone.uikit.dispatcher.interceptor.InterceptorCenter;
@@ -70,8 +71,10 @@ final class NavigatorContext {
             if (entry == null) {
                 entry = RouterMap.parseUri(request.getUri());
             }
+
+            Context currentContext = request.getContext() == null ? mContext : request.getContext();
             //开启拦截器
-            if (request.from(mContext).fillEntry(entry).isValid()) {
+            if (request.from(currentContext).fillEntry(entry).isValid()) {
                 InterceptorCenter.callRequest(request);
             }
         }

@@ -37,7 +37,7 @@ public interface Interceptor<T extends Request> {
             Collections.sort(this.interceptors, new Comparator<Interceptor>() {
                 @Override
                 public int compare(Interceptor o1, Interceptor o2) {
-                    return o2.priority() - o1.priority();
+                    return o1.priority() - o2.priority();
                 }
             });
         }

@@ -34,7 +34,7 @@ public class FirstActivity extends AbsSTActivity {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startOpenPath("splash").call();
+                    Navigator.startOpenPath("splash").from(FirstActivity.this).call();
                 }
             });
         }

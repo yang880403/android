@@ -31,7 +31,7 @@ public class SplashViewContainer extends AbsSTViewContainer {
         bottomView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigator.startOpenPath("first").call();
+                Navigator.startOpenPath("first").from(getActivity()).call();
             }
         });
         return view;
