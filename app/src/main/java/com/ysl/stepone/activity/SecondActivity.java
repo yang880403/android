@@ -8,16 +8,18 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.stepone.component.common.ActivityHooker;
-import com.stepone.uikit.view.AbsSTActivity;
 import com.stepone.component.navigator.Navigator;
+import com.stepone.uikit.view.AbsSTActivity;
 import com.ysl.stepone.R;
 
 /**
- * FileName: FirstActivity
- * Author: shiliang
- * Date: 2019-12-02 21:33
+ * FileName: SecondActivity
+ * Author: y.liang
+ * Date: 2019-12-04 18:21
  */
-public class FirstActivity extends AbsSTActivity {
+
+public class SecondActivity extends AbsSTActivity {
+
     View bottomView;
 
     @Override
@@ -36,17 +38,10 @@ public class FirstActivity extends AbsSTActivity {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startOpenPath("second").from(FirstActivity.this).callForResult(new ActivityHooker.OnActivityResultCallback() {
-                        @Override
-                        public void onActivityResult(int resultCode, Intent data) {
-                            if (data != null) {
-                                String str = data.getStringExtra("title");
-                                if (str != null) {
-                                    setPageTitle(str);
-                                }
-                            }
-                        }
-                    });
+                    Intent intent = new Intent();
+                    intent.putExtra("title", "123");
+                    setResult(RESULT_CANCELED, intent);
+                    finish();
                 }
             });
         }

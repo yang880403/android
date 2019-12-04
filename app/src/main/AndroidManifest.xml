@@ -27,6 +27,7 @@
         </activity>
 
         <activity android:name=".activity.FirstActivity" />
+        <activity android:name=".activity.SecondActivity" />
 
     </application>
 </manifest>

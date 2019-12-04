@@ -9,7 +9,9 @@ import android.os.Looper;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import com.stepone.component.common.ActivityHooker;
 import com.stepone.component.navigator.RouterMap;
 import com.stepone.component.navigator.request.PushRequest;
 
@@ -58,7 +60,7 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
 
         @Override
         public void interceptor(Chain<PushRequest> chain) {
-            PushRequest request = chain.getRequest();
+            final PushRequest request = chain.getRequest();
 
             final Context context = request.getContext();
             RouterMap.Entry entry = request.getPayload();
@@ -77,7 +79,7 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
 
-                    final Bundle params = request.getBundle();
+                    Bundle params = request.getBundle();
                     if (params != null) {
                         intent.putExtras(params);
                     }
@@ -85,7 +87,12 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            ActivityCompat.startActivity(context, intent, params);
+                            ActivityHooker.OnActivityResultCallback resultCallback = request.getResultCallback();
+                            if ((context instanceof FragmentActivity) && resultCallback != null) {
+                                ActivityHooker.startActivityForResult((FragmentActivity) context, intent, resultCallback);
+                            } else {
+                                ActivityCompat.startActivity(context, intent, null);
+                            }
                         }
                     });
 

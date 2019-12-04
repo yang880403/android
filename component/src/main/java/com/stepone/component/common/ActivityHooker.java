@@ -1,7 +1,10 @@
 package com.stepone.component.common;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
@@ -17,10 +20,15 @@ import androidx.fragment.app.FragmentManager;
  */
 public class ActivityHooker {
 
-    public static void startActivityForResult(FragmentActivity activity, Intent intent, OnActivityResultCallback onActivityResultCallback) {
-        OnActivityResultDispatcherFragment fragment = getDispatcherFragment(activity);
+    public static void startActivityForResult(FragmentActivity activity, final Intent intent, final OnActivityResultCallback onActivityResultCallback) {
+        final OnActivityResultDispatcherFragment fragment = getDispatcherFragment(activity);
         if (fragment != null) {
-            fragment._startForResult(intent, onActivityResultCallback);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    fragment._startForResult(intent, onActivityResultCallback);
+                }
+            });
         }
     }
 
@@ -31,7 +39,7 @@ public class ActivityHooker {
             fragment = new OnActivityResultDispatcherFragment();
             fragmentManager.beginTransaction()
                     .add(fragment, OnActivityResultDispatcherFragment.TAG)
-                    .commitAllowingStateLoss();
+                    .commit();
         }
 
         return (OnActivityResultDispatcherFragment)fragment;
@@ -41,7 +49,7 @@ public class ActivityHooker {
         void onActivityResult(int resultCode, Intent data);
     }
 
-    private static class OnActivityResultDispatcherFragment extends Fragment {
+    public static class OnActivityResultDispatcherFragment extends Fragment {
         final static String TAG = "OnActivityResultDispatchFragment";
 
         final SparseArray<OnActivityResultCallback> mCallbacks = new SparseArray<>();
@@ -52,13 +60,20 @@ public class ActivityHooker {
             setRetainInstance(true);
         }
 
+        @Override
+        public void onAttach(@NonNull Context context) {
+            super.onAttach(context);
+        }
+
         void _startForResult(Intent intent, OnActivityResultCallback onActivityResultCallback) {
-            int requestCode = -1;
+            int requestCode = 0xFFFF;
             if (onActivityResultCallback != null) {
-                requestCode = onActivityResultCallback.hashCode();
+                requestCode = onActivityResultCallback.hashCode() % 0xFFFF;
                 mCallbacks.put(requestCode, onActivityResultCallback);
             }
-            startActivityForResult(intent, requestCode);
+            if (isAdded()) {
+                startActivityForResult(intent, requestCode);
+            }
         }
 
         @Override

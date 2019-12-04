@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.stepone.component.common.ActivityHooker;
 import com.stepone.component.navigator.Navigator;
 import com.stepone.component.navigator.RouterMap;
 
@@ -28,7 +29,7 @@ public abstract class Request {
     private Context context;
     private Bundle bundle;
     private Observer observer;
-    private ResultCallback resultCallback;
+    private ActivityHooker.OnActivityResultCallback resultCallback;
 
     /**
      * 路由匹配的关键信息
@@ -62,7 +63,7 @@ public abstract class Request {
         Navigator.call(this);
     }
 
-    public void callForResult(ResultCallback callback) {
+    public void callForResult(ActivityHooker.OnActivityResultCallback callback) {
         this.resultCallback = callback;
         Navigator.call(this);
     }
@@ -100,11 +101,11 @@ public abstract class Request {
         this.observer = observer;
     }
 
-    public ResultCallback getResultCallback() {
+    public ActivityHooker.OnActivityResultCallback getResultCallback() {
         return resultCallback;
     }
 
-    void setResultCallback(ResultCallback resultCallback) {
+    void setResultCallback(ActivityHooker.OnActivityResultCallback resultCallback) {
         this.resultCallback = resultCallback;
     }
 
