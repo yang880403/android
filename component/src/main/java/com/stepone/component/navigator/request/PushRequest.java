@@ -21,4 +21,9 @@ public final class PushRequest extends Request {
     public boolean isValid() {
         return getContext() != null && getPayload() != null;
     }
+
+    @Override
+    public PushRequest check() {
+        return this;
+    }
 }

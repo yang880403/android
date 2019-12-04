@@ -7,4 +7,8 @@ package com.stepone.component.navigator.request;
  */
 public final class InvokeRequest extends Request {
 
+    @Override
+    public InvokeRequest check() {
+        return this;
+    }
 }

@@ -17,6 +17,11 @@ public final class BackRequest extends Request {
         step = backStep;
     }
 
+    @Override
+    public BackRequest check() {
+        return this;
+    }
+
     public int getStep() {
         return step;
     }

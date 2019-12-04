@@ -51,5 +51,12 @@ public interface Interceptor<T extends Request> {
                 iterator.next().interceptor(this);
             }
         }
+
+        public void cancel() {
+            if (request.getObserver() != null) {
+                request.getObserver().onIntercepted(request);
+            }
+        }
+
     }
 }

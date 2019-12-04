@@ -1,6 +1,5 @@
 package com.stepone.component.common;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +22,9 @@ public class ActivityHooker {
     public static void startActivityForResult(FragmentActivity activity, final Intent intent, final OnActivityResultCallback onActivityResultCallback) {
         final OnActivityResultDispatcherFragment fragment = getDispatcherFragment(activity);
         if (fragment != null) {
+            /**
+             * 将任务放到looper中，以确保fragment事务的执行顺序
+             */
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
@@ -60,14 +62,10 @@ public class ActivityHooker {
             setRetainInstance(true);
         }
 
-        @Override
-        public void onAttach(@NonNull Context context) {
-            super.onAttach(context);
-        }
-
         void _startForResult(Intent intent, OnActivityResultCallback onActivityResultCallback) {
             int requestCode = 0xFFFF;
             if (onActivityResultCallback != null) {
+                //requestCode取值范围只能是[0, 2^16-1]
                 requestCode = onActivityResultCallback.hashCode() % 0xFFFF;
                 mCallbacks.put(requestCode, onActivityResultCallback);
             }

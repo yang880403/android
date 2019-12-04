@@ -33,7 +33,7 @@ public class FirstIntercepter implements Interceptor<PushRequest> {
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        chain.cancel();
                     }
                 })
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {

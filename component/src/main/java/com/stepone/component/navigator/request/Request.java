@@ -1,7 +1,6 @@
 package com.stepone.component.navigator.request;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -47,14 +46,6 @@ public abstract class Request {
      */
     private Uri uri;
 
-    public interface Observer {
-        void onLost(Request request);
-    }
-
-    public interface ResultCallback {
-        void onResult(Intent intent);
-    }
-
     Request() {
         this.bundle = new Bundle();
     }
@@ -70,6 +61,18 @@ public abstract class Request {
 
     public boolean isValid() {
         return true;
+    }
+
+    public abstract Request check();
+
+    /**
+     * 路由请求过程的观察者，在当前线程回调
+     */
+    public interface Observer {
+        void onLost(Request request);
+        void onFound(Request request);
+        void onIntercepted(Request request);
+        void onArrival(Request request);
     }
 
     /**

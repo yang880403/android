@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.stepone.component.common.ActivityHooker;
 import com.stepone.component.navigator.RouterMap;
 import com.stepone.component.navigator.request.PushRequest;
+import com.stepone.component.navigator.request.Request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,39 +65,57 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
 
             final Context context = request.getContext();
             RouterMap.Entry entry = request.getPayload();
+            Request.Observer observer = request.getObserver();
+
             if (context != null && entry != null) {
                 Class pageClazz = entry.getTargetClazz();
                 if (pageClazz != null) {
-                    Class activityClazz = null;
+                    Class targetActivityClazz = pageClazz;
                     if (Fragment.class.isAssignableFrom(pageClazz)) {
-                        activityClazz = entry.getParentClazz();
-                    } else if (Activity.class.isAssignableFrom(pageClazz)) {
-                        activityClazz = pageClazz;
+                        targetActivityClazz = entry.getParentClazz();
                     }
 
-                    final Intent intent = new Intent(context, activityClazz);
-                    if (!(context instanceof Activity)) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    }
-
-                    Bundle params = request.getBundle();
-                    if (params != null) {
-                        intent.putExtras(params);
-                    }
-
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ActivityHooker.OnActivityResultCallback resultCallback = request.getResultCallback();
-                            if ((context instanceof FragmentActivity) && resultCallback != null) {
-                                ActivityHooker.startActivityForResult((FragmentActivity) context, intent, resultCallback);
-                            } else {
-                                ActivityCompat.startActivity(context, intent, null);
-                            }
+                    if (targetActivityClazz != null && Activity.class.isAssignableFrom(targetActivityClazz)) {
+                        final Intent intent = new Intent(context, targetActivityClazz);
+                        if (!(context instanceof Activity)) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         }
-                    });
 
+                        Bundle params = request.getBundle();
+                        if (params != null) {
+                            intent.putExtras(params);
+                        }
+
+                        if (observer != null) {
+                            observer.onFound(request);
+                        }
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ActivityHooker.OnActivityResultCallback resultCallback = request.getResultCallback();
+
+                                /**
+                                 * 只能自动hook FragmentActivity的返回结果
+                                 */
+                                if ((context instanceof FragmentActivity) && resultCallback != null) {
+                                    ActivityHooker.startActivityForResult((FragmentActivity) context, intent, resultCallback);
+                                } else {
+                                    ActivityCompat.startActivity(context, intent, null);
+                                }
+                            }
+                        });
+
+                        if (observer != null) {
+                            observer.onArrival(request);
+                        }
+
+                        return;
+                    }
                 }
+            }
+
+            if (observer != null) {
+                observer.onLost(request);
             }
         }
     }
