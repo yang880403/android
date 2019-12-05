@@ -5,9 +5,12 @@ import android.app.Application;
 import com.stepone.component.navigator.Navigator;
 import com.stepone.component.navigator.RouterMap;
 import com.stepone.component.navigator.interceptor.InterceptorCenter;
+import com.ysl.stepone.activity.BaseActivity;
 import com.ysl.stepone.activity.FirstActivity;
 import com.ysl.stepone.activity.SecondActivity;
 import com.ysl.stepone.activity.SplashAcitivity;
+import com.ysl.stepone.fragment.FirstFragment;
+import com.ysl.stepone.fragment.SecondFragment;
 import com.ysl.stepone.fragment.SplashFragment;
 
 /**
@@ -23,9 +26,9 @@ public class STApplication extends Application {
         super.onCreate();
 
         Navigator.init(this);
-        RouterMap.addRouter(new RouterMap.Entry("", "splash", SplashFragment.class, SplashAcitivity.class, 0));
-        RouterMap.addRouter(new RouterMap.Entry("", "first", FirstActivity.class, null, 0));
-        RouterMap.addRouter(new RouterMap.Entry("", "second", SecondActivity.class, null, 0));
+        RouterMap.addRouter(new RouterMap.Entry("", "splash", SplashFragment.class, BaseActivity.class, 0));
+        RouterMap.addRouter(new RouterMap.Entry("", "first", FirstFragment.class, BaseActivity.class, 0));
+        RouterMap.addRouter(new RouterMap.Entry("", "second", SecondFragment.class, BaseActivity.class, 0));
 
         InterceptorCenter.addPushInterceptor(new FirstIntercepter(), null);
     }

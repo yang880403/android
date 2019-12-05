@@ -9,15 +9,23 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.stepone.uikit.R;
 
 /**
- * FileName: AbsSTActivity
+ * FileName: STActivity
  * Author: shiliang
  * Date: 2019-11-24 18:00
  */
-public class AbsSTActivity extends AppCompatActivity {
+
+/**
+ * 1、开发者不用再花精力去处理状态条和导航条的问题，只需要实现导航条之下的UI填充及交互处理即可
+ * 2、重写setContentView实现，开发者遵照原来的使用方式和习惯，给activity填充布局
+ * 3、如果是基于Fragment进行APP开发，那么只需要通过setContentFragent进行fragment绑定
+ * 4、提供接口，方便使用者控制statusBar、navigationBar、loadingAnimation等基础操作
+ */
+public class STActivity extends AppCompatActivity {
     private ViewGroup mContentParent;
     private ViewGroup mLoadingContentParent;
     private TextView mLoadingTextView;
@@ -35,7 +43,7 @@ public class AbsSTActivity extends AppCompatActivity {
         mLoadingContentParent = findViewById(R.id.st_uikit_abs_loading_content);
 
         setLoadingView(R.layout.st_uikit_default_loading_view);
-        setAppbarBackgroundColor(Color.WHITE, Color.BLACK);
+        setAppbarBackgroundColor(Color.WHITE, Color.GRAY);
     }
 
     @Override
@@ -59,6 +67,15 @@ public class AbsSTActivity extends AppCompatActivity {
         if (mContentParent != null) {
             mContentParent.removeAllViews();
             mContentParent.addView(view, params);
+        }
+    }
+
+    void setContentFragment(Fragment fragment) {
+        if (fragment != null && mContentParent != null) {
+            mContentParent.removeAllViews();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.st_uikit_abs_content, fragment)
+                    .commit();
         }
     }
 

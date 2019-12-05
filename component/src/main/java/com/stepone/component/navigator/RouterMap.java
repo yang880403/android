@@ -1,6 +1,7 @@
 package com.stepone.component.navigator;
 
 import android.net.Uri;
+import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
@@ -14,7 +15,9 @@ import java.util.Map;
  */
 
 final public class RouterMap {
+    //分组存储路由
     private final static Map<String, Map<String, Entry>> mRouterMaps = new HashMap<>(8);
+    private final static SparseArray<Entry> mRouterCache = new SparseArray<>();
 
     public static void addRouter(Entry entry) {
         Map<String, Entry> routerMap = mRouterMaps.get(entry.group);
@@ -31,7 +34,16 @@ final public class RouterMap {
             return null;
         }
 
-        return mRouterMaps.get(group == null ? "" : group).get(path);
+        Entry entry = mRouterMaps.get(group == null ? "" : group).get(path);
+        if (entry != null) {
+            mRouterCache.put(entry.hashCode(), entry);
+        }
+
+        return entry;
+    }
+
+    static Entry getRouter(int cacheId) {
+        return mRouterCache.get(cacheId);
     }
 
     static Entry parseUri(Uri uri) {
@@ -44,6 +56,7 @@ final public class RouterMap {
         public final static int USER_LOGIN = 1;
     }
     public static class Entry {
+        public final static String KEY_ENTRY_ID = "_KEY_ENTRY_ID";
         /**
          * 组名 @NonNull
          */

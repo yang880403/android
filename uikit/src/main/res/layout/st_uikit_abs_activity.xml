@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.AbsSTActivity">
+    tools:context=".view.STActivity">
 
     <com.stepone.uikit.view.AppBar
         android:id="@+id/st_uikit_abs_appbar"

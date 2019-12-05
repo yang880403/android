@@ -3,7 +3,6 @@ package com.ysl.stepone.activity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.stepone.uikit.view.AbsSTActivity;
 import com.ysl.stepone.R;
 import com.ysl.stepone.fragment.SplashFragment;
 
@@ -14,7 +13,7 @@ import com.ysl.stepone.fragment.SplashFragment;
  * Date: 2019-11-22 17:26
  */
 
-public class SplashAcitivity extends AbsSTActivity {
+public class SplashAcitivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

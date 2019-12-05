@@ -1,6 +1,7 @@
 package com.ysl.stepone.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,22 +10,24 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.stepone.component.navigator.Navigator;
 import com.stepone.uikit.view.STFragment;
 import com.ysl.stepone.R;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 /**
- * FileName: SplashFragment
- * Author: shiliang
- * Date: 2019-11-26 22:25
+ * FileName: SecondFragment
+ * Author: y.liang
+ * Date: 2019-12-05 11:09
  */
-public class SplashFragment extends STFragment {
+
+public class SecondFragment extends STFragment {
     View bottomView;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        getSTActivity().setPageTitle("splash view");
+        getSTActivity().setPageTitle("second view");
     }
 
     @Nullable
@@ -32,12 +35,17 @@ public class SplashFragment extends STFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_splash, container, false);
         bottomView = view.findViewById(R.id.bottom_view);
-        bottomView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigator.startOpenPath("first").from(getActivity()).call();
-            }
-        });
+        if (bottomView != null) {
+            bottomView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra("title", "123");
+                    getActivity().setResult(RESULT_CANCELED, intent);
+                    getActivity().finish();
+                }
+            });
+        }
         return view;
     }
 

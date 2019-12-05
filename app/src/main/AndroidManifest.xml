@@ -12,7 +12,7 @@
         >
 
         <activity
-            android:name=".activity.SplashAcitivity"
+            android:name=".activity.BaseActivity"
             android:label="测试"
             >
             <intent-filter>
@@ -25,9 +25,6 @@
                     <!--/>-->
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.FirstActivity" />
-        <activity android:name=".activity.SecondActivity" />
 
     </application>
 </manifest>

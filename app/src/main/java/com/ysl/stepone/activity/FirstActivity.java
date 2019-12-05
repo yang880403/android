@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.stepone.component.common.ActivityHooker;
-import com.stepone.uikit.view.AbsSTActivity;
 import com.stepone.component.navigator.Navigator;
 import com.ysl.stepone.R;
 
@@ -17,7 +16,7 @@ import com.ysl.stepone.R;
  * Author: shiliang
  * Date: 2019-12-02 21:33
  */
-public class FirstActivity extends AbsSTActivity {
+public class FirstActivity extends BaseActivity {
     View bottomView;
 
     @Override

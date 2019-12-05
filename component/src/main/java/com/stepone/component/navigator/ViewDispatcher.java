@@ -11,14 +11,13 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
 /**
- * 根据Intent和RouterMap进行ViewContainer分发
+ * 根据Intent和RouterMap进行Fragment分发
  */
 public class ViewDispatcher {
     public static Fragment resolveFragment(Intent intent) {
-        String group = intent.getStringExtra("group");
-        String path = intent.getStringExtra("path");
+        int routerId = intent.getIntExtra(RouterMap.Entry.KEY_ENTRY_ID, 0);
 
-        RouterMap.Entry entry = RouterMap.getRouter(path, group);
+        RouterMap.Entry entry = RouterMap.getRouter(routerId);
         if (entry == null) {
             return null;
         }

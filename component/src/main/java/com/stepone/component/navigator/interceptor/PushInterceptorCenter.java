@@ -56,7 +56,7 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
 
         @Override
         public String name() {
-            return "finallyPushInterceptor";
+            return "FinallyPushInterceptor";
         }
 
         @Override
@@ -77,6 +77,10 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
 
                     if (targetActivityClazz != null && Activity.class.isAssignableFrom(targetActivityClazz)) {
                         final Intent intent = new Intent(context, targetActivityClazz);
+
+                        //传递routerID
+                        intent.putExtra(RouterMap.Entry.KEY_ENTRY_ID, entry.hashCode());
+
                         if (!(context instanceof Activity)) {
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         }
@@ -89,6 +93,7 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
                         if (observer != null) {
                             observer.onFound(request);
                         }
+
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
