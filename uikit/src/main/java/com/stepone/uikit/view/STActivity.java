@@ -98,7 +98,7 @@ public class STActivity extends AppCompatActivity {
     /**
      * 沉浸模式
      */
-    public void setAppBarBackgroundColor(int color) {
+    public void setAppbarBackgroundColor(int color) {
         mAppBar.setBackgroundColor(color);
         setStatusBarBackgroundColor(color);
     }

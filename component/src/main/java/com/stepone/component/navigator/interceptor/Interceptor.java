@@ -19,7 +19,7 @@ public interface Interceptor<T extends Request> {
 
     int priority();
     String name();
-    void interceptor(Chain<T> chain);
+    void intercept(Chain<T> chain);
 
     /**
      * 拦截器按照优先级排序
@@ -48,7 +48,7 @@ public interface Interceptor<T extends Request> {
 
         public void proceed() {
             if (iterator.hasNext()) {
-                iterator.next().interceptor(this);
+                iterator.next().intercept(this);
             }
         }
 

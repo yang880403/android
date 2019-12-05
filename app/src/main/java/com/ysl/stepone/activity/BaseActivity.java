@@ -21,7 +21,8 @@ public class BaseActivity extends STFragmentDispatcherActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setAppbarBackgroundColor(Color.WHITE, Color.GRAY);
+        setAppbarBackgroundColor(Color.WHITE);
+        setDarkModeStatusBar();
     }
 
     @Override

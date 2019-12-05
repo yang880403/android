@@ -25,7 +25,7 @@ public class FirstIntercepter implements Interceptor<PushRequest> {
     }
 
     @Override
-    public void interceptor(final Chain<PushRequest> chain) {
+    public void intercept(final Chain<PushRequest> chain) {
         PushRequest request = chain.getRequest();
         Context context = request.getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle("title")

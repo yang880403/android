@@ -21,7 +21,7 @@ import static android.app.Activity.RESULT_CANCELED;
  * Date: 2019-12-05 11:09
  */
 
-public class SecondFragment extends STFragment {
+public class SecondFragment extends BaseFragment {
     View bottomView;
 
     @Override

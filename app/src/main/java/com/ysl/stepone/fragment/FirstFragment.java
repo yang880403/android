@@ -1,6 +1,5 @@
 package com.ysl.stepone.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 
 import com.stepone.component.common.ActivityHooker;
 import com.stepone.component.navigator.Navigator;
-import com.stepone.uikit.view.STFragment;
 import com.ysl.stepone.R;
 
 /**
@@ -21,13 +19,13 @@ import com.ysl.stepone.R;
  * Date: 2019-12-05 11:08
  */
 
-public class FirstFragment extends STFragment {
+public class FirstFragment extends BaseFragment {
     View bottomView;
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        getSTActivity().setPageTitle("first view");
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSTActivity().setPageTitle("FIRST VIEW");
     }
 
     @Nullable

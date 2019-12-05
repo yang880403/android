@@ -18,7 +18,7 @@ import com.ysl.stepone.R;
  * Author: shiliang
  * Date: 2019-11-26 22:25
  */
-public class SplashFragment extends STFragment {
+public class SplashFragment extends BaseFragment {
     View bottomView;
 
     @Override

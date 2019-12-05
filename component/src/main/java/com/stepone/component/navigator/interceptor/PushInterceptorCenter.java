@@ -60,7 +60,7 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
         }
 
         @Override
-        public void interceptor(Chain<PushRequest> chain) {
+        public void intercept(Chain<PushRequest> chain) {
             final PushRequest request = chain.getRequest();
 
             final Context context = request.getContext();
