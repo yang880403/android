@@ -25,21 +25,21 @@ public interface Interceptor<T extends Request> {
      * 拦截器按照优先级排序
      */
     final class Chain<T extends Request> {
-        private final List<Interceptor<T>> interceptors;
-        private Iterator<Interceptor<T>> iterator;
+        private final Iterator<Interceptor<T>> iterator;
         private final T request;
 
         Chain(@NonNull List<Interceptor<T>> interceptors, @NonNull T request) {
-            this.interceptors = new ArrayList<>(interceptors);
+            List<Interceptor<T>> list = new ArrayList<>(interceptors);
             this.request = request;
-            iterator = this.interceptors.iterator();
 
-            Collections.sort(this.interceptors, new Comparator<Interceptor>() {
+            Collections.sort(list, new Comparator<Interceptor>() {
                 @Override
                 public int compare(Interceptor o1, Interceptor o2) {
                     return o1.priority() - o2.priority();
                 }
             });
+
+            iterator = list.iterator();
         }
 
         public T getRequest() {
