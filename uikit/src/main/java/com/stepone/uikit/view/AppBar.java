@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.stepone.uikit.R;
+import com.stepone.uikit.view.utils.DisplayUtils;
 
 /**
  * FileName: AppBar
@@ -31,10 +33,13 @@ public class AppBar extends RelativeLayout {
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.STAppBar);
         titleView.setText(attributes.getString(R.styleable.STAppBar_stTitle));
         titleView.setTextColor(attributes.getColor(R.styleable.STAppBar_stTitleColor, Color.BLACK));
-//        titleView.setTextSize(attributes.getDimension(R.styleable.STAppBar_stTitleSize, 17));
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, attributes.getDimension(R.styleable.STAppBar_stTitleSize, DisplayUtils.sp2px(context, 17)));
 
         attributes.recycle();
     }
+
+
+
 
     public void setTitle(String title) {
         titleView.setText(title);

@@ -50,4 +50,101 @@ abstract public class STFragment extends Fragment {
     public STActivity getSTActivity() {
         return mSTActivity;
     }
+
+    /**
+     * 定制App bar
+     */
+
+    public void setPageTitle(String pageTitle) {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setTitle(pageTitle);
+    }
+
+    public void setPageTitleColor(int color) {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setTitleColor(color);
+    }
+
+    public void setPageTitleView(int layoutResID) {
+        if (mSTActivity == null) {
+            return;
+        }
+
+    }
+
+    /**
+     * 沉浸模式
+     */
+    public void setAppbarBackgroundColor(int color) {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setAppbarBackgroundColor(color);
+    }
+
+    /**
+     * MD模式
+     */
+    public void setAppbarBackgroundColor(int appBarColor, int statusBarColor) {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setAppbarBackgroundColor(appBarColor, statusBarColor);
+    }
+
+    public void setStatusBarBackgroundColor(int color) {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setStatusBarBackgroundColor(color);
+    }
+
+    /**
+     * 布局延伸到状态栏，且状态栏设置为透明
+     */
+    public void setFullscreen() {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setFullscreen();
+    }
+
+    /**
+     * 设置Dark模式
+     */
+    public void setDarkModeStatusBar() {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.setDarkModeStatusBar();
+    }
+
+    /**
+     * loading view
+     */
+
+    public void startLoading() {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.startLoading();
+    }
+
+    public void startLoading(String text) {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.startLoading(text);
+    }
+
+    public void stopLoading() {
+        if (mSTActivity == null) {
+            return;
+        }
+        mSTActivity.stopLoading();
+    }
 }

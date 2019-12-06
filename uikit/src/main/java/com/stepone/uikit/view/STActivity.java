@@ -43,7 +43,7 @@ public class STActivity extends AppCompatActivity {
         mLoadingContentParent = findViewById(R.id.st_uikit_abs_loading_content);
 
         setLoadingView(R.layout.st_uikit_default_loading_view);
-        setAppbarBackgroundColor(Color.WHITE, Color.GRAY);
+        setAppbarBackgroundColor(Color.WHITE, Color.GRAY);//default color
     }
 
     @Override
@@ -111,6 +111,9 @@ public class STActivity extends AppCompatActivity {
         setStatusBarBackgroundColor(statusBarColor);
     }
 
+    /**
+     * 设置状态条颜色
+     */
     public void setStatusBarBackgroundColor(int color) {
         getWindow().setStatusBarColor(color);
     }
