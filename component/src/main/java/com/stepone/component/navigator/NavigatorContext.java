@@ -72,7 +72,17 @@ final class NavigatorContext {
                 metaRouter = RouterMap.parseUri(request.getUri());
             }
 
-            Context currentContext = request.getContext() == null ? mContext : request.getContext();
+            Context currentContext = request.getContext();
+
+            //优先使用导航栈中处于栈顶的页面
+            if (currentContext == null) {
+                INavigatorPage page = NavigatorStack.getCurrentVisiablePage();
+                if (page != null) {
+                    currentContext = page.getContext();
+                }
+            }
+
+            currentContext = currentContext == null ? mContext : currentContext;
             //开启拦截器
             if (request.from(currentContext).fillRouterInfo(metaRouter).isValid()) {
                 InterceptorCenter.callRequest(request);
