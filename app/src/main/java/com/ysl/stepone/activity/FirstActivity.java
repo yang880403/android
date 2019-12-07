@@ -35,7 +35,7 @@ public class FirstActivity extends BaseActivity {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startOpenPath("second").from(FirstActivity.this).callForResult(new ActivityHooker.OnActivityResultCallback() {
+                    Navigator.startOpenPath("second").from(FirstActivity.this).pushForResult(new ActivityHooker.OnActivityResultCallback() {
                         @Override
                         public void onActivityResult(int resultCode, Intent data) {
                             if (data != null) {

@@ -37,7 +37,7 @@ public class FirstFragment extends BaseFragment {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startOpenPath("second").from(getActivity()).callForResult(new ActivityHooker.OnActivityResultCallback() {
+                    Navigator.startOpenPath("second").from(getActivity()).pushForResult(new ActivityHooker.OnActivityResultCallback() {
                         @Override
                         public void onActivityResult(int resultCode, Intent data) {
                             if (data != null) {

@@ -16,37 +16,37 @@ import java.util.Map;
 
 final public class RouterMap {
     //分组存储路由
-    private final static Map<String, Map<String, Entry>> mRouterMaps = new HashMap<>(8);
-    private final static SparseArray<Entry> mRouterCache = new SparseArray<>();
+    private final static Map<String, Map<String, MetaRouter>> mRouterMaps = new HashMap<>(8);
+    private final static SparseArray<MetaRouter> mRouterCache = new SparseArray<>();
 
-    public static void addRouter(Entry entry) {
-        Map<String, Entry> routerMap = mRouterMaps.get(entry.group);
+    public static void addRouter(MetaRouter metaRouter) {
+        Map<String, MetaRouter> routerMap = mRouterMaps.get(metaRouter.group);
         if (routerMap == null) {
             routerMap = new HashMap<>();
-            mRouterMaps.put(entry.group, routerMap);
+            mRouterMaps.put(metaRouter.group, routerMap);
         }
 
-        routerMap.put(entry.path, entry);
+        routerMap.put(metaRouter.path, metaRouter);
     }
 
-    static Entry getRouter(String path, String group) {
+    static MetaRouter getRouter(String path, String group) {
         if (path == null) {
             return null;
         }
 
-        Entry entry = mRouterMaps.get(group == null ? "" : group).get(path);
-        if (entry != null) {
-            mRouterCache.put(entry.hashCode(), entry);
+        MetaRouter metaRouter = mRouterMaps.get(group == null ? "" : group).get(path);
+        if (metaRouter != null) {
+            mRouterCache.put(metaRouter.hashCode(), metaRouter);
         }
 
-        return entry;
+        return metaRouter;
     }
 
-    static Entry getRouter(int cacheId) {
+    static MetaRouter getRouter(int cacheId) {
         return mRouterCache.get(cacheId);
     }
 
-    static Entry parseUri(Uri uri) {
+    static MetaRouter parseUri(Uri uri) {
         return null;
     }
 
@@ -55,8 +55,11 @@ final public class RouterMap {
         public final static int NONE = 0;
         public final static int USER_LOGIN = 1;
     }
-    public static class Entry {
-        public final static String KEY_ENTRY_ID = "_KEY_ENTRY_ID";
+    public static class MetaRouter {
+        /**
+         * 使用MetaRouter的hash值作为routerID即可
+         */
+        public final static String KEY_ROUTER_ID_INT = "__KEY_ROUTER_ID_INT__";
         /**
          * 组名 @NonNull
          */
@@ -82,7 +85,7 @@ final public class RouterMap {
          */
         private int security;
 
-        public Entry(@NonNull String group, @NonNull String path, @NonNull Class targetClazz, Class parentClazz, int security) {
+        public MetaRouter(@NonNull String group, @NonNull String path, @NonNull Class targetClazz, Class parentClazz, int security) {
             this.group = group;
             this.path = path;
             this.targetClazz = targetClazz;

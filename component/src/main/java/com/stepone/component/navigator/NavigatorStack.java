@@ -9,24 +9,29 @@ import java.util.List;
  * Author: shiliang
  * Date: 2019-12-07 10:28
  */
-class NavigatorStack {
+public class NavigatorStack {
     private final static List<PageStub<? extends INavigatorPage>> mStack = new ArrayList<>(30);
 
     private static class PageStub<T extends INavigatorPage> {
         private String pageTag;
-
+        private int routerId;//Page对应的MetaRouter信息
         private WeakReference<T> pageRefrence;
 
-        PageStub(String tag, T page) {
+        PageStub(String tag, int routerId, T page) {
             if (page == null) {
                 throw new NullPointerException("construct PageStub with null page");
             }
             this.pageTag = tag;
+            this.routerId = routerId;
             this.pageRefrence = new WeakReference<>(page);
         }
 
         String getPageTag() {
             return pageTag;
+        }
+
+        int getRouterId() {
+            return routerId;
         }
 
         T getPage() {
@@ -45,12 +50,12 @@ class NavigatorStack {
         }
     }
 
-    private static void push(String tag, INavigatorPage page) {
+    private static void push(String tag, int routerId, INavigatorPage page) {
         if (page == null) {
             return;
         }
 
-        mStack.add(new PageStub<>(tag, page));
+        mStack.add(new PageStub<>(tag, routerId, page));
     }
 
     private static void pop() {
@@ -71,7 +76,7 @@ class NavigatorStack {
         }
 
         for (PageStub<? extends INavigatorPage> pageStub : mStack) {
-            if (page.equals(pageStub.getPageTag())) {
+            if (page.equals(pageStub.getPage())) {
                 return pageStub;
             }
         }
@@ -79,8 +84,8 @@ class NavigatorStack {
         return null;
     }
 
-    static void onPageCreate(String tag, INavigatorPage page) {
-        push(tag, page);
+    public static void onPageCreate(String tag, int routerId, INavigatorPage page) {
+        push(tag, routerId, page);
     }
 
     /**
@@ -89,7 +94,7 @@ class NavigatorStack {
      *
      * 若page不处于栈顶，说明是非正常销毁（系统内存不足），则执行pageStub的销毁操作
      */
-    static void onPageDestroy(INavigatorPage page) {
+    public static void onPageDestroy(INavigatorPage page) {
         if (page == null) {
             return;
         }
@@ -100,7 +105,7 @@ class NavigatorStack {
                 pop();
 
                 /**
-                 * 查看前一个page是否处于销毁状态，并进行处理
+                 * 若前一个page是否处于销毁状态，则一并进行POP操作
                  */
                 PageStub<? extends INavigatorPage> currentPageStub = getTopPageStub();
                 if (currentPageStub != null && currentPageStub.isDestroyed()) {
@@ -112,32 +117,29 @@ class NavigatorStack {
 
 
     /**
-     * 最多回退到首页，并提示退出应用
+     * 若回退层级大于等于导航栈大小，直接退出应用，可通过拦截器进行功能扩展
      * @param step 回退层级
      */
-    static void back(int step) {
+    public static void back(int step) {
         int stackSize = mStack.size();
         if (step <= 0) {
             return;
         }
 
         int fromIndex = stackSize - step;
-        boolean needExitApp = false;
-        if (fromIndex <= 0) {
-            //TODO
-            needExitApp = true;
-            return;
-        } else {
-            List<PageStub<? extends INavigatorPage>> list = new ArrayList<>();
-            for (int i = fromIndex; i < stackSize; i++) {
-                list.add(mStack.get(i));
-            }
+        if (fromIndex <= 0) {//此时会退出APP
+            fromIndex = 0;
+        }
 
-            mStack.removeAll(list);
+        List<PageStub<? extends INavigatorPage>> list = new ArrayList<>();
+        for (int i = fromIndex; i < stackSize; i++) {
+            list.add(mStack.get(i));
+        }
 
-            for (int i = list.size()-1; i >= 0; i--) {
-                list.get(i).finishPage();
-            }
+        mStack.removeAll(list);
+
+        for (int i = list.size()-1; i >= 0; i--) {
+            list.get(i).finishPage();
         }
     }
 
@@ -145,7 +147,7 @@ class NavigatorStack {
      * 根据tag获取最后入栈的page
      * 返回负数，表明没有找到
      */
-    static int getPageIndex(String tag) {
+    public static int getPageIndex(String tag) {
         if (tag != null) {
             for (int i = mStack.size()-1; i >= 0; i--) {
                 PageStub<? extends INavigatorPage> pageStub = mStack.get(i);
@@ -162,7 +164,7 @@ class NavigatorStack {
      * 根据tag获取最早入栈的page
      * 返回负数，表明没有找到
      */
-    static int getFirstPageIndex(String tag) {
+    public static int getFirstPageIndex(String tag) {
         if (tag != null) {
             for (int i = 0; i < mStack.size(); i++) {
                 PageStub<? extends INavigatorPage> pageStub = mStack.get(i);
@@ -175,14 +177,14 @@ class NavigatorStack {
         return -1;
     }
 
-    static int getStackSize() {
+    public static int getStackSize() {
         return mStack.size();
     }
 
     /**
      * 获取当前显示的页面
      */
-     static INavigatorPage getCurrentVisiablePage() {
+    public static INavigatorPage getCurrentVisiablePage() {
         PageStub<? extends INavigatorPage> pageStub = getTopPageStub();
         if (pageStub == null) {
             return null;

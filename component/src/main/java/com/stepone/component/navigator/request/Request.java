@@ -28,7 +28,7 @@ public abstract class Request {
     private Context context;
     private Bundle bundle;
     private Observer observer;
-    private ActivityHooker.OnActivityResultCallback resultCallback;
+    private Callback callback;
 
     /**
      * 路由匹配的关键信息
@@ -39,7 +39,7 @@ public abstract class Request {
     /**
      * 匹配到的路由信息
      */
-    private RouterMap.Entry payload;
+    private RouterMap.MetaRouter metaRouter;
 
     /**
      * 通过解析uri，匹配到合适的路由
@@ -50,12 +50,12 @@ public abstract class Request {
         this.bundle = new Bundle();
     }
 
-    public void call() {
-        Navigator.call(this);
+    public interface Callback {
+        void onFailure();
+        void onSucceed();
     }
 
-    public void callForResult(ActivityHooker.OnActivityResultCallback callback) {
-        this.resultCallback = callback;
+    protected void call() {
         Navigator.call(this);
     }
 
@@ -63,7 +63,13 @@ public abstract class Request {
         return true;
     }
 
-    public abstract Request check();
+    public void push() {}
+
+    public void pushForResult(ActivityHooker.OnActivityResultCallback callback) {}
+
+    public void back() {}
+
+    public void back(Callback callback) {}
 
     /**
      * 路由请求过程的观察者，在当前线程回调
@@ -82,12 +88,36 @@ public abstract class Request {
         return context;
     }
 
-    void setContext(Context context) {
-        this.context = context;
-    }
-
     public Bundle getBundle() {
         return bundle;
+    }
+
+    public Observer getObserver() {
+        return observer;
+    }
+
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public RouterMap.MetaRouter getMetaRouter() {
+        return metaRouter;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    void setContext(Context context) {
+        this.context = context;
     }
 
     void setBundle(Bundle bundle) {
@@ -96,48 +126,20 @@ public abstract class Request {
         }
     }
 
-    public Observer getObserver() {
-        return observer;
-    }
-
     void setObserver(Observer observer) {
         this.observer = observer;
-    }
-
-    public ActivityHooker.OnActivityResultCallback getResultCallback() {
-        return resultCallback;
-    }
-
-    void setResultCallback(ActivityHooker.OnActivityResultCallback resultCallback) {
-        this.resultCallback = resultCallback;
-    }
-
-    public String getGroup() {
-        return group;
     }
 
     void setGroup(String group) {
         this.group = group;
     }
 
-    public String getPath() {
-        return path;
-    }
-
     void setPath(String path) {
         this.path = path;
     }
 
-    public RouterMap.Entry getPayload() {
-        return payload;
-    }
-
-    void setPayload(RouterMap.Entry payload) {
-        this.payload = payload;
-    }
-
-    public Uri getUri() {
-        return uri;
+    void setMetaRouter(RouterMap.MetaRouter metaRouter) {
+        this.metaRouter = metaRouter;
     }
 
     void setUri(Uri uri) {
@@ -153,8 +155,8 @@ public abstract class Request {
         return this;
     }
 
-    public Request fillEntry(RouterMap.Entry entry) {
-        this.payload = entry;
+    public Request fillRouterInfo(RouterMap.MetaRouter metaRouter) {
+        this.metaRouter = metaRouter;
         return this;
     }
 
@@ -167,6 +169,16 @@ public abstract class Request {
         if (bundle != null) {
             this.bundle.putAll(bundle);
         }
+        return this;
+    }
+
+    public Request withObserver(Observer observer) {
+        this.observer = observer;
+        return this;
+    }
+
+    public Request withCallback(Callback callback) {
+        this.callback = callback;
         return this;
     }
 
@@ -197,11 +209,6 @@ public abstract class Request {
 
     public Request withChar(String key, char ch) {
         bundle.putChar(key, ch);
-        return this;
-    }
-
-    public Request withObserver(Observer observer) {
-        this.observer = observer;
         return this;
     }
 }

@@ -7,8 +7,4 @@ package com.stepone.component.navigator.request;
  */
 public class CustomRequest extends Request {
 
-    @Override
-    public CustomRequest check() {
-        return this;
-    }
 }

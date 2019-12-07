@@ -17,16 +17,20 @@ public final class BackRequest extends Request {
         step = backStep;
     }
 
-    @Override
-    public BackRequest check() {
-        return this;
-    }
-
     public int getStep() {
         return step;
     }
 
-    public void setStep(int backStep) {
+    public BackRequest withStep(int backStep) {
         step = backStep;
+        return this;
+    }
+
+    public void back() {
+        call();
+    }
+
+    public void back(Callback callback) {
+
     }
 }

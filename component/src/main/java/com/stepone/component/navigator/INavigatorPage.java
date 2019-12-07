@@ -1,5 +1,7 @@
 package com.stepone.component.navigator;
 
+import android.content.Context;
+
 /**
  * FileName: INavigatorPage
  * Author: shiliang
@@ -13,4 +15,6 @@ public interface INavigatorPage {
     boolean isPageDestroyed();
 
     void finish();
+
+    Context getContext();
 }

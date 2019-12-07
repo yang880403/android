@@ -15,14 +15,14 @@ import androidx.fragment.app.Fragment;
  */
 public class ViewDispatcher {
     public static Fragment resolveFragment(Intent intent) {
-        int routerId = intent.getIntExtra(RouterMap.Entry.KEY_ENTRY_ID, 0);
+        int routerId = intent.getIntExtra(RouterMap.MetaRouter.KEY_ROUTER_ID_INT, 0);
 
-        RouterMap.Entry entry = RouterMap.getRouter(routerId);
-        if (entry == null) {
+        RouterMap.MetaRouter metaRouter = RouterMap.getRouter(routerId);
+        if (metaRouter == null) {
             return null;
         }
 
-        Class clazz = entry.getTargetClazz();
+        Class clazz = metaRouter.getTargetClazz();
         if (clazz == null || !(Fragment.class.isAssignableFrom(clazz))) {
             return null;
         }

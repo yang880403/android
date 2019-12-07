@@ -35,7 +35,7 @@ public class SplashFragment extends BaseFragment {
         bottomView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigator.startOpenPath("first").from(getActivity()).call();
+                Navigator.startOpenPath("first").from(getActivity()).push();
             }
         });
         return view;

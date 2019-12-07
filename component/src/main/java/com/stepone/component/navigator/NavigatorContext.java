@@ -66,15 +66,15 @@ final class NavigatorContext {
      */
     void call(Request request) {
         if (request != null) {
-            RouterMap.Entry entry = RouterMap.getRouter(request.getPath(), request.getGroup());
+            RouterMap.MetaRouter metaRouter = RouterMap.getRouter(request.getPath(), request.getGroup());
 
-            if (entry == null) {
-                entry = RouterMap.parseUri(request.getUri());
+            if (metaRouter == null) {
+                metaRouter = RouterMap.parseUri(request.getUri());
             }
 
             Context currentContext = request.getContext() == null ? mContext : request.getContext();
             //开启拦截器
-            if (request.from(currentContext).fillEntry(entry).isValid()) {
+            if (request.from(currentContext).fillRouterInfo(metaRouter).isValid()) {
                 InterceptorCenter.callRequest(request);
             }
         }

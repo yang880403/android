@@ -64,22 +64,22 @@ final class PushInterceptorCenter extends InterceptorCenter<PushRequest> {
             final PushRequest request = chain.getRequest();
 
             final Context context = request.getContext();
-            RouterMap.Entry entry = request.getPayload();
+            RouterMap.MetaRouter metaRouter = request.getMetaRouter();
             Request.Observer observer = request.getObserver();
 
-            if (context != null && entry != null) {
-                Class pageClazz = entry.getTargetClazz();
+            if (context != null && metaRouter != null) {
+                Class pageClazz = metaRouter.getTargetClazz();
                 if (pageClazz != null) {
                     Class targetActivityClazz = pageClazz;
                     if (Fragment.class.isAssignableFrom(pageClazz)) {
-                        targetActivityClazz = entry.getParentClazz();
+                        targetActivityClazz = metaRouter.getParentClazz();
                     }
 
                     if (targetActivityClazz != null && Activity.class.isAssignableFrom(targetActivityClazz)) {
                         final Intent intent = new Intent(context, targetActivityClazz);
 
                         //传递routerID
-                        intent.putExtra(RouterMap.Entry.KEY_ENTRY_ID, entry.hashCode());
+                        intent.putExtra(RouterMap.MetaRouter.KEY_ROUTER_ID_INT, metaRouter.hashCode());
 
                         if (!(context instanceof Activity)) {
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
