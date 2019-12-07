@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.stepone.component.common.ActivityHooker;
+import com.stepone.component.page.ActivityHooker;
 import com.stepone.component.navigator.RouterMap;
 import com.stepone.component.navigator.request.PushRequest;
 import com.stepone.component.navigator.request.Request;

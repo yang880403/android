@@ -7,7 +7,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.stepone.component.common.ActivityHooker;
+import com.stepone.component.page.ActivityHooker;
 import com.stepone.component.navigator.Navigator;
 import com.ysl.stepone.R;
 

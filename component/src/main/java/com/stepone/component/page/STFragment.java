@@ -1,4 +1,4 @@
-package com.stepone.uikit.view;
+package com.stepone.component.page;
 
 import android.content.Context;
 import android.os.Bundle;

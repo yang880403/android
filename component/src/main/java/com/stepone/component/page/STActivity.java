@@ -1,4 +1,4 @@
-package com.stepone.uikit.view;
+package com.stepone.component.page;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -11,7 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.stepone.uikit.R;
+import com.stepone.component.R;
+
 
 /**
  * FileName: STActivity

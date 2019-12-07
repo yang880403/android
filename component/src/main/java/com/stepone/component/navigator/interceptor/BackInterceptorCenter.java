@@ -1,7 +1,10 @@
 package com.stepone.component.navigator.interceptor;
 
+import com.stepone.component.navigator.NavigatorStack;
 import com.stepone.component.navigator.request.BackRequest;
+import com.stepone.component.navigator.request.Request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +29,34 @@ final class BackInterceptorCenter extends InterceptorCenter<BackRequest> {
 
     @Override
     protected List<Interceptor<BackRequest>> constructDefaultInterceptors() {
-        return null;
+        List<Interceptor<BackRequest>> list = new ArrayList<>();
+        list.add(new FinallyInterceptor());
+        return list;
+    }
+
+    private final static class FinallyInterceptor implements Interceptor<BackRequest>{
+
+        @Override
+        public int priority() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public String name() {
+            return "FinallyBackInterceptor";
+        }
+
+        @Override
+        public void intercept(Chain<BackRequest> chain) {
+            BackRequest request = chain.getRequest();
+            Request.Callback callback = request.getCallback();
+
+            int step = request.getStep();
+            NavigatorStack.back(step);
+
+            if (callback != null) {
+                callback.onSucceed();
+            }
+        }
     }
 }

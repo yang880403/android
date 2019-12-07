@@ -1,6 +1,6 @@
 package com.ysl.stepone.fragment;
 
-import com.stepone.uikit.view.STFragment;
+import com.stepone.component.page.STFragment;
 
 /**
  * FileName: BaseFragment

@@ -17,13 +17,17 @@ public class NavigatorStack {
         private int routerId;//Page对应的MetaRouter信息
         private WeakReference<T> pageRefrence;
 
-        PageStub(String tag, int routerId, T page) {
+        PageStub(int routerId, T page) {
             if (page == null) {
                 throw new NullPointerException("construct PageStub with null page");
             }
-            this.pageTag = tag;
+
             this.routerId = routerId;
             this.pageRefrence = new WeakReference<>(page);
+        }
+
+        void setPageTag(String tag) {
+            this.pageTag = tag;
         }
 
         String getPageTag() {
@@ -50,12 +54,12 @@ public class NavigatorStack {
         }
     }
 
-    private static void push(String tag, int routerId, INavigatorPage page) {
+    private static void push(int routerId, INavigatorPage page) {
         if (page == null) {
             return;
         }
 
-        mStack.add(new PageStub<>(tag, routerId, page));
+        mStack.add(new PageStub<>(routerId, page));
     }
 
     private static void pop() {
@@ -84,8 +88,11 @@ public class NavigatorStack {
         return null;
     }
 
-    public static void onPageCreate(String tag, int routerId, INavigatorPage page) {
-        push(tag, routerId, page);
+    /**
+     * 构建导航栈
+     */
+    public static void onPageCreate(int routerId, INavigatorPage page) {
+        push(routerId, page);
     }
 
     /**

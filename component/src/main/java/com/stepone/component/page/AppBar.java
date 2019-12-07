@@ -1,4 +1,4 @@
-package com.stepone.uikit.view;
+package com.stepone.component.page;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.stepone.uikit.R;
-import com.stepone.uikit.view.utils.DisplayUtils;
+import com.stepone.component.R;
+
 
 /**
  * FileName: AppBar
@@ -33,13 +33,15 @@ public class AppBar extends RelativeLayout {
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.STAppBar);
         titleView.setText(attributes.getString(R.styleable.STAppBar_stTitle));
         titleView.setTextColor(attributes.getColor(R.styleable.STAppBar_stTitleColor, Color.BLACK));
-        titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, attributes.getDimension(R.styleable.STAppBar_stTitleSize, DisplayUtils.sp2px(context, 17)));
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, attributes.getDimension(R.styleable.STAppBar_stTitleSize, sp2px(context, 17)));
 
         attributes.recycle();
     }
 
 
-
+    private int sp2px(Context context, float value) {
+        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, value, context.getResources().getDisplayMetrics());
+    }
 
     public void setTitle(String title) {
         titleView.setText(title);

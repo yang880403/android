@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.stepone.component.common.ActivityHooker;
+import com.stepone.component.page.ActivityHooker;
 import com.stepone.component.navigator.Navigator;
 import com.stepone.component.navigator.RouterMap;
 

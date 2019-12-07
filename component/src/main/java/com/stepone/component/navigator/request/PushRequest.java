@@ -2,7 +2,7 @@ package com.stepone.component.navigator.request;
 
 import android.net.Uri;
 
-import com.stepone.component.common.ActivityHooker;
+import com.stepone.component.page.ActivityHooker;
 
 /**
  * FileName: PushRequest

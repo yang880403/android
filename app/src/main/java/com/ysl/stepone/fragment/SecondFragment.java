@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.stepone.uikit.view.STFragment;
 import com.ysl.stepone.R;
 
 import static android.app.Activity.RESULT_CANCELED;

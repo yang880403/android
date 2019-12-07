@@ -1,4 +1,4 @@
-package com.stepone.component.common;
+package com.stepone.component.page;
 
 import android.content.Intent;
 import android.os.Bundle;
