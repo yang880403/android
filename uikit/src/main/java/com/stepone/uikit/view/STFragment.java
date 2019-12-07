@@ -59,14 +59,14 @@ abstract public class STFragment extends Fragment {
         if (mSTActivity == null) {
             return;
         }
-        mSTActivity.setTitle(pageTitle);
+        mSTActivity.setPageTitle(pageTitle);
     }
 
     public void setPageTitleColor(int color) {
         if (mSTActivity == null) {
             return;
         }
-        mSTActivity.setTitleColor(color);
+        mSTActivity.setPageTitleColor(color);
     }
 
     public void setPageTitleView(int layoutResID) {
