@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.stepone.component.navigator.Navigator;
+import com.stepone.navigator.Navigator;
 import com.ysl.stepone.R;
 
 /**
@@ -34,7 +34,7 @@ public class SplashFragment extends BaseFragment {
         bottomView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigator.startOpenPath("first").from(getActivity()).push();
+                Navigator.startOpenPath("first").from(getActivity()).pushRequest().push();
             }
         });
         return view;

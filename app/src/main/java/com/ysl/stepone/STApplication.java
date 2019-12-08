@@ -2,9 +2,9 @@ package com.ysl.stepone;
 
 import android.app.Application;
 
-import com.stepone.component.navigator.Navigator;
-import com.stepone.component.navigator.RouterMap;
-import com.stepone.component.navigator.interceptor.InterceptorCenter;
+import com.stepone.navigator.Navigator;
+import com.stepone.navigator.RouterMap;
+import com.stepone.navigator.interceptor.InterceptorCenter;
 import com.ysl.stepone.activity.BaseActivity;
 import com.ysl.stepone.fragment.FirstFragment;
 import com.ysl.stepone.fragment.SecondFragment;

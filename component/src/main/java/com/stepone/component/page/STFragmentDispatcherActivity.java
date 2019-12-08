@@ -7,9 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.stepone.component.navigator.INavigatorPage;
-import com.stepone.component.navigator.NavigatorStack;
-import com.stepone.component.navigator.RouterMap;
+
+import com.stepone.navigator.INavigatorPage;
+import com.stepone.navigator.NavigatorStack;
+import com.stepone.navigator.RouterMap;
 
 import java.util.Set;
 

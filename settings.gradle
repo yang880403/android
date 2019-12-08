@@ -1,2 +1,2 @@
-include ':app', ':uikit', ':component', ':foundation'
+include ':app', ':uikit', ':component', ':foundation', ':navigator'
 rootProject.name='StepOne'

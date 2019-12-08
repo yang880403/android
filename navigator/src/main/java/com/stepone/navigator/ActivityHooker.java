@@ -1,4 +1,4 @@
-package com.stepone.component.page;
+package com.stepone.navigator;
 
 import android.content.Intent;
 import android.os.Bundle;

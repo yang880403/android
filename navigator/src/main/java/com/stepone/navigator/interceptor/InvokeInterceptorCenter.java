@@ -1,6 +1,6 @@
-package com.stepone.component.navigator.interceptor;
+package com.stepone.navigator.interceptor;
 
-import com.stepone.component.navigator.request.InvokeRequest;
+import com.stepone.navigator.request.InvokeRequest;
 
 import java.util.List;
 

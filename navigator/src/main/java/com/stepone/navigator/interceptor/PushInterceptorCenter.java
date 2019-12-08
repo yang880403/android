@@ -1,4 +1,4 @@
-package com.stepone.component.navigator.interceptor;
+package com.stepone.navigator.interceptor;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,10 +11,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.stepone.component.page.ActivityHooker;
-import com.stepone.component.navigator.RouterMap;
-import com.stepone.component.navigator.request.PushRequest;
-import com.stepone.component.navigator.request.Request;
+import com.stepone.navigator.ActivityHooker;
+import com.stepone.navigator.RouterMap;
+import com.stepone.navigator.request.PushRequest;
+import com.stepone.navigator.request.Request;
 
 import java.util.ArrayList;
 import java.util.List;

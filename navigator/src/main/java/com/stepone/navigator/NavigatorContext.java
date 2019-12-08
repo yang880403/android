@@ -1,4 +1,4 @@
-package com.stepone.component.navigator;
+package com.stepone.navigator;
 
 /**
  * FileName: NavigatorContext
@@ -11,10 +11,10 @@ import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
 
-import com.stepone.component.navigator.interceptor.InterceptorCenter;
-import com.stepone.component.navigator.request.BackRequest;
-import com.stepone.component.navigator.request.PushRequest;
-import com.stepone.component.navigator.request.Request;
+import com.stepone.navigator.interceptor.InterceptorCenter;
+import com.stepone.navigator.request.BackRequest;
+import com.stepone.navigator.request.PushRequest;
+import com.stepone.navigator.request.Request;
 
 /**
  * 搜集参数，根据RouterMap等构建完整Request，根据requestType，选择选择不同的拦截器进行拦截
@@ -74,7 +74,7 @@ final class NavigatorContext {
 
             Context currentContext = request.getContext();
 
-            //优先使用导航栈中处于栈顶的页面
+            //优先使用导航栈中处于栈顶的页面作为fromContext
             if (currentContext == null) {
                 INavigatorPage page = NavigatorStack.getCurrentVisiablePage();
                 if (page != null) {
@@ -86,6 +86,12 @@ final class NavigatorContext {
             //开启拦截器
             if (request.from(currentContext).fillRouterInfo(metaRouter).isValid()) {
                 InterceptorCenter.callRequest(request);
+                return;
+            }
+
+            Request.Observer observer = request.getObserver();
+            if (observer != null) {
+                observer.onLost(request);
             }
         }
     }

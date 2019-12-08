@@ -7,10 +7,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.stepone.component.navigator.Navigator;
-import com.stepone.component.navigator.NavigatorStack;
-import com.stepone.component.navigator.ViewDispatcher;
-import com.stepone.component.navigator.request.Request;
+import com.stepone.navigator.Navigator;
+import com.stepone.navigator.ViewDispatcher;
+import com.stepone.navigator.request.Request;
 import com.stepone.component.page.STFragmentDispatcherActivity;
 import com.ysl.stepone.fragment.SplashFragment;
 
@@ -41,7 +40,7 @@ public class BaseActivity extends STFragmentDispatcherActivity {
 
     @Override
     public void onBackPressed() {
-        Navigator.startGoBack().back(new Request.Callback() {
+        Navigator.startGoBack().backRequest().back(new Request.Callback() {
             @Override
             public void onFailure() {
 

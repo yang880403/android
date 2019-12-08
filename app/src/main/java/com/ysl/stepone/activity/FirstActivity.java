@@ -7,8 +7,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.stepone.component.page.ActivityHooker;
-import com.stepone.component.navigator.Navigator;
+import com.stepone.navigator.ActivityHooker;
+import com.stepone.navigator.Navigator;
 import com.ysl.stepone.R;
 
 /**
@@ -35,7 +35,7 @@ public class FirstActivity extends BaseActivity {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startOpenPath("second").from(FirstActivity.this).pushForResult(new ActivityHooker.OnActivityResultCallback() {
+                    Navigator.startOpenPath("second").from(FirstActivity.this).pushRequest().pushForResult(new ActivityHooker.OnActivityResultCallback() {
                         @Override
                         public void onActivityResult(int resultCode, Intent data) {
                             if (data != null) {

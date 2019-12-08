@@ -1,4 +1,4 @@
-package com.stepone.component.navigator;
+package com.stepone.navigator;
 
 /**
  * FileName: ViewDispatcher

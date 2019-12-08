@@ -1,4 +1,4 @@
-package com.stepone.component.navigator.request;
+package com.stepone.navigator.request;
 
 /**
  * FileName: CustomRequest
@@ -6,5 +6,8 @@ package com.stepone.component.navigator.request;
  * Date: 2019-12-01 23:30
  */
 public class CustomRequest extends Request {
-
+    @Override
+    public CustomRequest customRequest() {
+        return this;
+    }
 }

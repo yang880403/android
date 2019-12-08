@@ -1,4 +1,4 @@
-package com.stepone.component.navigator;
+package com.stepone.navigator;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.stepone.component.navigator;
+package com.stepone.navigator;
 
 /**
  * FileName: Navigator
@@ -9,7 +9,7 @@ package com.stepone.component.navigator;
 
 import android.app.Application;
 
-import com.stepone.component.navigator.request.Request;
+import com.stepone.navigator.request.Request;
 
 /**
  * API provider

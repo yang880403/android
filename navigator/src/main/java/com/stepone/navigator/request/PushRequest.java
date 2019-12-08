@@ -1,8 +1,9 @@
-package com.stepone.component.navigator.request;
+package com.stepone.navigator.request;
 
 import android.net.Uri;
 
-import com.stepone.component.page.ActivityHooker;
+import com.stepone.navigator.ActivityHooker;
+
 
 /**
  * FileName: PushRequest
@@ -18,6 +19,10 @@ public final class PushRequest extends Request {
 
     public PushRequest(String path) {
         setPath(path);
+    }
+
+    public PushRequest pushRequest() {
+        return this;
     }
 
     @Override

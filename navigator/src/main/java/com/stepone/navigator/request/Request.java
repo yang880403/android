@@ -1,12 +1,11 @@
-package com.stepone.component.navigator.request;
+package com.stepone.navigator.request;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.stepone.component.page.ActivityHooker;
-import com.stepone.component.navigator.Navigator;
-import com.stepone.component.navigator.RouterMap;
+import com.stepone.navigator.Navigator;
+import com.stepone.navigator.RouterMap;
 
 /**
  * FileName: Request
@@ -55,21 +54,29 @@ public abstract class Request {
         void onSucceed();
     }
 
-    protected void call() {
+    /**
+     * 子类需要重写对应方法
+     */
+    public PushRequest pushRequest() {
+        return null;
+    }
+    public BackRequest backRequest() {
+        return null;
+    }
+    public InvokeRequest invokeRequest() {
+        return null;
+    }
+    public CustomRequest customRequest() {
+        return null;
+    }
+
+    void call() {
         Navigator.call(this);
     }
 
     public boolean isValid() {
         return true;
     }
-
-    public void push() {}
-
-    public void pushForResult(ActivityHooker.OnActivityResultCallback callback) {}
-
-    public void back() {}
-
-    public void back(Callback callback) {}
 
     /**
      * 路由请求过程的观察者，在当前线程回调
@@ -82,7 +89,7 @@ public abstract class Request {
     }
 
     /**
-     * getter && setter
+     * getter
      */
     public Context getContext() {
         return context;
@@ -116,30 +123,13 @@ public abstract class Request {
         return uri;
     }
 
-    void setContext(Context context) {
-        this.context = context;
-    }
 
-    void setBundle(Bundle bundle) {
-        if (bundle != null) {
-            this.bundle = bundle;
-        }
-    }
-
-    void setObserver(Observer observer) {
-        this.observer = observer;
-    }
-
-    void setGroup(String group) {
-        this.group = group;
-    }
+    /**
+     * setter
+     */
 
     void setPath(String path) {
         this.path = path;
-    }
-
-    void setMetaRouter(RouterMap.MetaRouter metaRouter) {
-        this.metaRouter = metaRouter;
     }
 
     void setUri(Uri uri) {

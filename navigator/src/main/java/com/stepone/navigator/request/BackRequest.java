@@ -1,4 +1,4 @@
-package com.stepone.component.navigator.request;
+package com.stepone.navigator.request;
 
 /**
  * FileName: BackRequest
@@ -20,6 +20,11 @@ public final class BackRequest extends Request {
     public BackRequest(int backStep) {
         super();
         step = backStep;
+    }
+
+    @Override
+    public BackRequest backRequest() {
+        return this;
     }
 
     public int getStep() {

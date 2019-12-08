@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.stepone.component.page.ActivityHooker;
-import com.stepone.component.navigator.Navigator;
+import com.stepone.navigator.ActivityHooker;
+import com.stepone.navigator.Navigator;
 import com.ysl.stepone.R;
 
 /**
@@ -37,7 +37,7 @@ public class FirstFragment extends BaseFragment {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Navigator.startOpenPath("second").from(getActivity()).pushForResult(new ActivityHooker.OnActivityResultCallback() {
+                    Navigator.startOpenPath("second").from(getActivity()).pushRequest().pushForResult(new ActivityHooker.OnActivityResultCallback() {
                         @Override
                         public void onActivityResult(int resultCode, Intent data) {
                             if (data != null) {

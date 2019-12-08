@@ -1,8 +1,8 @@
-package com.stepone.component.navigator.interceptor;
+package com.stepone.navigator.interceptor;
 
 import androidx.annotation.NonNull;
 
-import com.stepone.component.navigator.request.Request;
+import com.stepone.navigator.request.Request;
 
 import java.util.ArrayList;
 import java.util.Collections;

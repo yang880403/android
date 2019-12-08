@@ -1,4 +1,4 @@
-package com.stepone.component.navigator;
+package com.stepone.navigator;
 
 import android.content.Context;
 

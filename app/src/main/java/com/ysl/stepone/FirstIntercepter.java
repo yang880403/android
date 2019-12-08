@@ -4,8 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-import com.stepone.component.navigator.interceptor.Interceptor;
-import com.stepone.component.navigator.request.PushRequest;
+import com.stepone.navigator.interceptor.Interceptor;
+import com.stepone.navigator.request.PushRequest;
 
 /**
  * FileName: FirstIntercepter

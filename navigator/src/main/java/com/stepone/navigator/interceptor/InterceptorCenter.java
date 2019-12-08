@@ -1,12 +1,12 @@
-package com.stepone.component.navigator.interceptor;
+package com.stepone.navigator.interceptor;
 
 import androidx.annotation.NonNull;
 
-import com.stepone.component.navigator.request.BackRequest;
-import com.stepone.component.navigator.request.CustomRequest;
-import com.stepone.component.navigator.request.InvokeRequest;
-import com.stepone.component.navigator.request.PushRequest;
-import com.stepone.component.navigator.request.Request;
+import com.stepone.navigator.request.BackRequest;
+import com.stepone.navigator.request.CustomRequest;
+import com.stepone.navigator.request.InvokeRequest;
+import com.stepone.navigator.request.PushRequest;
+import com.stepone.navigator.request.Request;
 
 import java.util.ArrayList;
 import java.util.HashMap;
