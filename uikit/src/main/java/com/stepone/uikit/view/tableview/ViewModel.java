@@ -2,6 +2,8 @@ package com.stepone.uikit.view.tableview;
 
 import android.view.View;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -14,7 +16,7 @@ import androidx.annotation.Nullable;
 abstract class ViewModel<E, V extends ContentView> {
     private E data;
 
-    protected ViewModel(E model) {
+    ViewModel(E model) {
         data = model;
     }
 
@@ -25,7 +27,8 @@ abstract class ViewModel<E, V extends ContentView> {
 
     abstract Class<V> getViewClazz();
 
-    abstract int getViewResourseId();
+    @LayoutRes
+    abstract int getLayoutResource();
 
     abstract void onBindView(@NonNull View view);
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,8 +60,7 @@ public class FirstFragment extends BaseFragment {
 
         @Override
         protected void onBindViewHolder(ViewHolder holder) {
-            TextView v = (TextView) holder.get(R.id.title_view);
-            v.setText("auto bind text " + getData());
+            holder.setText(R.id.title_view, "auto bind text " + getData());
         }
     }
 }

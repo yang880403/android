@@ -25,36 +25,37 @@ final class DecorView extends FrameLayout {
     }
 
     /**
-     * 初始化操作，优先根据res id 装饰content view
+     * 初始化操作，优先根据resource id 装饰content view
+     * 如果没有resource id ,则根据view model中的ViewClass来装饰content view
      */
-    public void onPrepare(ViewModel viewModel) {
+    public void onPrepare(@NonNull ViewModel viewModel) {
         if (isPrepared) {
             return;
         }
 
         isPrepared = true;
         mViewModel = viewModel;
-        if (mViewModel != null) {
-            int resId = mViewModel.getViewResourseId();
-            if (resId != 0) {
-                mContentView = LayoutInflater.from(getContext()).inflate(resId, this);
-                return;
-            }
 
-            Class clz = mViewModel.getViewClazz();
-            if (clz != null && ContentView.class.isAssignableFrom(clz)) {
-                try {
-                    mContentView = (ContentView) clz.newInstance();
-                    ((ContentView) mContentView).onPrepare(mViewModel);
-                    addView(mContentView);
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
+        int layoutResource = mViewModel.getLayoutResource();
+        if (layoutResource > 0) {
+            mContentView = LayoutInflater.from(getContext()).inflate(layoutResource, this);
+            return;
+        }
+
+        Class clz = mViewModel.getViewClazz();
+        if (clz != null && ContentView.class.isAssignableFrom(clz)) {
+            try {
+                ContentView contentView = (ContentView) clz.newInstance();
+                contentView.onInitialize(mViewModel);
+                addView(contentView);
+                mContentView = contentView;
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }
 
-    public void onDisplay(ViewModel viewModel) {
+    public void onDisplay(@NonNull ViewModel viewModel) {
         mViewModel = viewModel;
 
         if (mContentView != null) {
@@ -63,7 +64,6 @@ final class DecorView extends FrameLayout {
             } else {
                 viewModel.onBindView(mContentView);
             }
-
         }
     }
 }

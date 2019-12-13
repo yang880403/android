@@ -2,6 +2,7 @@ package com.stepone.uikit.view.tableview;
 
 import android.view.View;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
 /**
@@ -24,7 +25,8 @@ public class ClazzViewModel<E, V extends ContentView> extends ViewModel<E, V> {
     }
 
     @Override
-    int getViewResourseId() {
+    @LayoutRes
+    int getLayoutResource() {
         return 0;
     }
 

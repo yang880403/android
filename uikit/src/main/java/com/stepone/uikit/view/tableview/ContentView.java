@@ -18,7 +18,7 @@ public abstract class ContentView extends FrameLayout {
         super(context);
     }
 
-    public void onPrepare(ViewModel viewModel) {
+    public void onInitialize(@NonNull ViewModel viewModel) {
         mViewModel = viewModel;
     }
 
