@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.Constructor;
+
 /**
  * FileName: CellView
  * Author: y.liang
@@ -28,6 +30,8 @@ final class DecorView extends FrameLayout {
      * 初始化操作，优先根据resource id 装饰content view
      * 如果没有resource id ,则根据view model中的ViewClass来装饰content view
      */
+
+    @SuppressWarnings("unchecked")
     public void onPrepare(@NonNull ViewModel viewModel) {
         if (isPrepared) {
             return;
@@ -45,7 +49,9 @@ final class DecorView extends FrameLayout {
         Class clz = mViewModel.getViewClazz();
         if (clz != null && ContentView.class.isAssignableFrom(clz)) {
             try {
-                ContentView contentView = (ContentView) clz.newInstance();
+                Constructor constructor = clz.getDeclaredConstructor(Context.class);
+                constructor.setAccessible(true);
+                ContentView contentView = (ContentView) constructor.newInstance(getContext());
                 contentView.onInitialize(mViewModel);
                 addView(contentView);
                 mContentView = contentView;

@@ -1,5 +1,7 @@
 package com.ysl.stepone.fragment;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.stepone.uikit.view.tableview.ClazzViewModel;
+import com.stepone.uikit.view.tableview.ContentView;
 import com.stepone.uikit.view.tableview.RecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.ResViewModel;
+import com.stepone.uikit.view.utils.DisplayUtils;
 import com.ysl.stepone.R;
 
 /**
@@ -48,7 +53,11 @@ public class FirstFragment extends BaseFragment {
 
     private void buildDatasource() {
         for (int i = 0; i < 22; i++) {
-            mAdapter.add(new TestVM(i));
+            if (i % 2 == 0) {
+                mAdapter.add(new TestVM(i));
+            } else {
+                mAdapter.add(new GapVM());
+            }
         }
     }
 
@@ -61,6 +70,27 @@ public class FirstFragment extends BaseFragment {
         @Override
         protected void onBindViewHolder(ViewHolder holder) {
             holder.setText(R.id.title_view, "auto bind text " + getData());
+        }
+    }
+
+    private static class GapVM extends ClazzViewModel<GapVM.GapCell, Void>  {
+        private GapVM() {
+            super(GapCell.class, null);
+        }
+
+        private static class GapCell extends ContentView<GapVM> {
+
+            public GapCell(@NonNull Context context) {
+                super(context);
+                ViewGroup.LayoutParams params = getLayoutParams();
+                params.height = DisplayUtils.dp2px(context, 44);
+                setBackgroundColor(Color.BLUE);
+            }
+
+            @Override
+            public void onDisplay(GapVM viewModel) {
+
+            }
         }
     }
 }

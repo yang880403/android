@@ -15,7 +15,7 @@ import androidx.annotation.StringRes;
  * Date: 2019-12-13 17:46
  */
 
-public abstract class ResViewModel<E,  VH extends ResViewModel.ViewHolder> extends ViewModel<E, ContentView> {
+public abstract class ResViewModel<E,  VH extends ResViewModel.ViewHolder> extends ViewModel<ContentView, E> {
 
     private @LayoutRes int layoutId;
     private VH viewHolder;

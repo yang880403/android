@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
  * Date: 2019-12-13 17:46
  */
 
-public class ClazzViewModel<E, V extends ContentView> extends ViewModel<E, V> {
+public class ClazzViewModel<V extends ContentView, E> extends ViewModel<V, E> {
     private Class<V> viewClazz;
 
     public ClazzViewModel(Class<V> cls, E model) {

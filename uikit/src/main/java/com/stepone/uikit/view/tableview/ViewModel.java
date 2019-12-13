@@ -2,7 +2,6 @@ package com.stepone.uikit.view.tableview;
 
 import android.view.View;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +12,7 @@ import androidx.annotation.Nullable;
  * Date: 2019-12-13 17:45
  */
 
-abstract class ViewModel<E, V extends ContentView> {
+abstract class ViewModel<V extends ContentView, E> {
     private E data;
 
     ViewModel(E model) {
