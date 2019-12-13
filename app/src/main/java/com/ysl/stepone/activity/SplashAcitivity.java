@@ -22,7 +22,7 @@ public class SplashAcitivity extends BaseActivity {
 
         setPageTitle("标题");
 
-        getSupportFragmentManager().beginTransaction().add(R.id.st_uikit_abs_content, new SplashFragment(), SplashAcitivity.class.toString()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.st_component_abs_content, new SplashFragment(), SplashAcitivity.class.toString()).commit();
 //        setAppBarBackgroundColor(Color.BLUE);
 //        setContentView(R.layout.activity_splash);
 

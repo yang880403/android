@@ -30,20 +30,20 @@ public class STActivity extends AppCompatActivity {
     private ViewGroup mContentParent;
     private ViewGroup mLoadingContentParent;
     private TextView mLoadingTextView;
-    private AppBar mAppBar;
+    private STAppBar mSTAppBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setTheme(R.style.STAppTheme);
-        super.setContentView(R.layout.st_uikit_abs_activity);
+        super.setContentView(R.layout.st_component_abs_activity);
 
-        mAppBar = findViewById(R.id.st_uikit_abs_appbar);
-        mContentParent = findViewById(R.id.st_uikit_abs_content);
-        mLoadingContentParent = findViewById(R.id.st_uikit_abs_loading_content);
+        mSTAppBar = findViewById(R.id.st_component_abs_appbar);
+        mContentParent = findViewById(R.id.st_component_abs_content);
+        mLoadingContentParent = findViewById(R.id.st_component_abs_loading_content);
 
-        setLoadingView(R.layout.st_uikit_default_loading_view);
+        setLoadingView(R.layout.st_component_default_loading_view);
         setAppbarBackgroundColor(Color.WHITE, Color.GRAY);//default color
     }
 
@@ -75,7 +75,7 @@ public class STActivity extends AppCompatActivity {
         if (fragment != null && mContentParent != null) {
             mContentParent.removeAllViews();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.st_uikit_abs_content, fragment)
+                    .add(R.id.st_component_abs_content, fragment)
                     .commit();
         }
     }
@@ -85,11 +85,11 @@ public class STActivity extends AppCompatActivity {
      */
 
     public void setPageTitle(String pageTitle) {
-        mAppBar.setTitle(pageTitle);
+        mSTAppBar.setTitle(pageTitle);
     }
 
     public void setPageTitleColor(int color) {
-        mAppBar.setTitleColor(color);
+        mSTAppBar.setTitleColor(color);
     }
 
     public void setPageTitleView(int layoutResID) {
@@ -100,7 +100,7 @@ public class STActivity extends AppCompatActivity {
      * 沉浸模式
      */
     public void setAppbarBackgroundColor(int color) {
-        mAppBar.setBackgroundColor(color);
+        mSTAppBar.setBackgroundColor(color);
         setStatusBarBackgroundColor(color);
     }
 
@@ -108,7 +108,7 @@ public class STActivity extends AppCompatActivity {
      * MD模式
      */
     public void setAppbarBackgroundColor(int appBarColor, int statusBarColor) {
-        mAppBar.setBackgroundColor(appBarColor);
+        mSTAppBar.setBackgroundColor(appBarColor);
         setStatusBarBackgroundColor(statusBarColor);
     }
 
@@ -148,7 +148,7 @@ public class STActivity extends AppCompatActivity {
             mLoadingContentParent.removeAllViews();
             getLayoutInflater().inflate(layoutResID, mLoadingContentParent);
 
-            mLoadingTextView = findViewById(R.id.st_uikit_loading_view_textview);
+            mLoadingTextView = findViewById(R.id.st_component_loading_view_textview);
         }
     }
 

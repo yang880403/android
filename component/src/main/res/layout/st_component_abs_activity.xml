@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.stepone.component.page.STActivity">
 
-    <com.stepone.component.page.AppBar
-        android:id="@+id/st_uikit_abs_appbar"
+    <com.stepone.component.page.STAppBar
+        android:id="@+id/st_component_abs_appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/appbarHeight"
         app:stTitleSize="@dimen/appBarTitleSize"
@@ -16,13 +16,13 @@
         tools:stTitle="TITLE"/>
 
     <FrameLayout
-        android:id="@+id/st_uikit_abs_content"
+        android:id="@+id/st_component_abs_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/st_uikit_abs_appbar"
+        android:layout_below="@+id/st_component_abs_appbar"
         />
     <FrameLayout
-        android:id="@+id/st_uikit_abs_loading_content"
+        android:id="@+id/st_component_abs_loading_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

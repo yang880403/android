@@ -20,16 +20,16 @@ import com.stepone.uikit.view.utils.DisplayUtils;
  * Date: 2019-11-25 16:53
  */
 
-public class AppBar extends RelativeLayout {
+public class STAppBar extends RelativeLayout {
     private ImageView leftView;
     private TextView titleView;
 
 
-    public AppBar(Context context, AttributeSet attrs) {
+    public STAppBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.st_uikit_appbar, this);
-        leftView = findViewById(R.id.st_uikit_appbar_leftview);
-        titleView = findViewById(R.id.st_uikit_appbar_titleview);
+        LayoutInflater.from(context).inflate(R.layout.st_component_appbar, this);
+        leftView = findViewById(R.id.st_component_appbar_leftview);
+        titleView = findViewById(R.id.st_component_appbar_titleview);
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.STAppBar);
         titleView.setText(attributes.getString(R.styleable.STAppBar_stTitle));
