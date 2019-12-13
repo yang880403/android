@@ -1,16 +1,18 @@
 package com.ysl.stepone.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.stepone.navigator.ActivityHooker;
-import com.stepone.navigator.Navigator;
+import com.stepone.uikit.view.tableview.RecyclerViewAdapter;
+import com.stepone.uikit.view.tableview.ResViewModel;
 import com.ysl.stepone.R;
 
 /**
@@ -20,7 +22,8 @@ import com.ysl.stepone.R;
  */
 
 public class FirstFragment extends BaseFragment {
-    View bottomView;
+    private RecyclerView mTableView;
+    private RecyclerViewAdapter mAdapter = new RecyclerViewAdapter();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,31 +34,35 @@ public class FirstFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_splash, container, false);
-        bottomView = view.findViewById(R.id.bottom_view);
-        if (bottomView != null) {
-            bottomView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Navigator.startOpenPath("second").from(getActivity()).pushRequest().pushForResult(new ActivityHooker.OnActivityResultCallback() {
-                        @Override
-                        public void onActivityResult(int resultCode, Intent data) {
-                            if (data != null) {
-                                String str = data.getStringExtra("title");
-                                if (str != null) {
-                                    getSTActivity().setPageTitle(str);
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-        }
+        View view = inflater.inflate(R.layout.fragment_first_tableview, container, false);
+        mTableView = view.findViewById(R.id.tableview);
+        mTableView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        mTableView.setAdapter(mAdapter);
+        buildDatasource();
         return view;
     }
 
     @Override
     public int onCreateView() {
-        return R.layout.fragment_splash;
+        return R.layout.fragment_first_tableview;
+    }
+
+    private void buildDatasource() {
+        for (int i = 0; i < 22; i++) {
+            mAdapter.add(new TestVM(i));
+        }
+    }
+
+
+    private static class TestVM extends ResViewModel<Integer, ResViewModel.ViewHolder> {
+        TestVM(int i) {
+            super(R.layout.cell_test, i);
+        }
+
+        @Override
+        protected void onBindViewHolder(ViewHolder holder) {
+            TextView v = (TextView) holder.get(R.id.title_view);
+            v.setText("auto bind text " + getData());
+        }
     }
 }
