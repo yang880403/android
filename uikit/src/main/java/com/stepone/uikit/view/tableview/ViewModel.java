@@ -1,12 +1,11 @@
 package com.stepone.uikit.view.tableview;
 
+import android.util.SparseArray;
 import android.view.View;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * FileName: ViewModel
@@ -14,12 +13,20 @@ import java.util.Set;
  * Date: 2019-12-13 17:45
  */
 
-abstract class ViewModel<V extends ViewCell, D> {
+public abstract class ViewModel<V extends ViewCell, D> {
     private D payload;
-    private View.OnClickListener itemClickListener;
-    private View.OnLongClickListener itemLongClickListener;
-    private Set<Integer> subViewClickListeners = new HashSet<>();
-    private Set<Integer> subViewLongClickListeners = new HashSet<>();
+    private OnClickListener itemClickListener;
+    private OnLongClickListener itemLongClickListener;
+    private SparseArray<OnClickListener> mSubViewClickListeners = new SparseArray<>();
+    private SparseArray<OnLongClickListener> mSubViewLongClickListeners = new SparseArray<>();
+
+    public interface OnClickListener {
+        void onClick(View view, ViewModel viewModel);
+    }
+
+    public interface OnLongClickListener {
+        void onLongClick(View view, ViewModel viewModel);
+    }
 
     @Nullable
     public D getPayload() {
@@ -30,23 +37,37 @@ abstract class ViewModel<V extends ViewCell, D> {
         this.payload = payload;
     }
 
-    public void setItemClickListener(View.OnClickListener itemClickListener) {
+    public void setItemClickListener(OnClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
-    public void setItemLongClickListener(View.OnLongClickListener itemLongClickListener) {
-        this.itemLongClickListener = itemLongClickListener;
-    }
-
-    public View.OnClickListener getItemClickListener() {
+    public OnClickListener getItemClickListener() {
         return itemClickListener;
     }
 
-    public View.OnLongClickListener getItemLongClickListener() {
+    public void setItemLongClickListener(OnLongClickListener itemLongClickListener) {
+        this.itemLongClickListener = itemLongClickListener;
+    }
+
+    public OnLongClickListener getItemLongClickListener() {
         return itemLongClickListener;
     }
 
+    public void setClickListener(@IdRes int viewId, OnClickListener listener) {
+        mSubViewClickListeners.put(viewId, listener);
+    }
 
+    public OnClickListener getClickListener(@IdRes int viewId) {
+        return mSubViewClickListeners.get(viewId);
+    }
+
+    public void setLongClickListener(@IdRes int viewId, OnLongClickListener listener) {
+        mSubViewLongClickListeners.put(viewId, listener);
+    }
+
+    public OnLongClickListener getLongClickListener(@IdRes int viewId) {
+        return mSubViewLongClickListeners.get(viewId);
+    }
 
     abstract Class<V> getViewClazz();
 

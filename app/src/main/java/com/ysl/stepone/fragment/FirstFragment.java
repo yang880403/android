@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.stepone.uikit.view.tableview.RecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.ResViewModel;
 import com.stepone.uikit.view.tableview.ViewCell;
 import com.stepone.uikit.view.tableview.ViewHolder;
+import com.stepone.uikit.view.tableview.ViewModel;
 import com.stepone.uikit.view.utils.DisplayUtils;
 import com.ysl.stepone.R;
 
@@ -55,7 +57,15 @@ public class FirstFragment extends BaseFragment {
     private void buildDatasource() {
         for (int i = 0; i < 22; i++) {
             if (i % 2 == 0) {
-                mAdapter.add(new TestVM(i));
+                TestVM vm = new TestVM(i);
+                vm.setItemClickListener(new ViewModel.OnClickListener() {
+                    @Override
+                    public void onClick(View view, ViewModel viewModel) {
+                        TestVM testVM = (TestVM) viewModel;
+                        Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                mAdapter.add(vm);
             } else {
                 mAdapter.add(new GapVM());
             }
@@ -70,7 +80,8 @@ public class FirstFragment extends BaseFragment {
         }
 
         @Override
-        protected void onBindViewHolder(ViewHolder holder) {
+        protected void onBindView(@NonNull ViewHolder holder) {
+            holder.setItemClickListener(getItemClickListener(), this);
         }
 
         @Override
@@ -91,6 +102,11 @@ public class FirstFragment extends BaseFragment {
                 ViewGroup.LayoutParams params = getLayoutParams();
                 params.height = DisplayUtils.dp2px(context, 44);
                 setBackgroundColor(Color.BLUE);
+            }
+
+            @Override
+            public void onInitialize(@NonNull GapVM viewModel) {
+
             }
 
             @Override

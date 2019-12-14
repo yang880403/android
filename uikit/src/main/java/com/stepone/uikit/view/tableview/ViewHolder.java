@@ -14,14 +14,13 @@ import androidx.annotation.StringRes;
  * Date: 2019-12-14 08:59
  */
 public class ViewHolder {
-
-    interface IViewDisplayer<VM extends ViewModel> {
-        void onViewInitialize(@NonNull View view, @NonNull VM viewModel);
-        void onViewDisplay(@NonNull View view, @NonNull VM viewModel);
-    }
-
     private View mView;
     private SparseArray<View> mViewCache = new SparseArray<>();
+
+    interface IViewDisplayer {
+        void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel);
+        void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel);
+    }
 
     protected ViewHolder(@NonNull View view) {
         mView = view;
@@ -40,6 +39,33 @@ public class ViewHolder {
         }
 
         return (T) view;
+    }
+
+    public ViewHolder setOnClickListener(@IdRes int viewId, final ViewModel.OnClickListener listener, final ViewModel viewModel) {
+        if (listener != null) {
+            View view = getView(viewId);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(v, viewModel);
+                }
+            });
+        }
+
+        return this;
+    }
+
+    public ViewHolder setItemClickListener(final ViewModel.OnClickListener listener, final ViewModel viewModel) {
+        if (listener != null) {
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(mView, viewModel);
+                }
+            });
+        }
+
+        return this;
     }
 
     public ViewHolder setText(@IdRes int viewId, CharSequence text) {

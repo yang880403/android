@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 /**
  * ViewCell需要承担起ViewHolder的职责，缓存subview
  */
-public abstract class ViewCell<VM extends ViewModel> extends FrameLayout implements ViewHolder.IViewDisplayer<VM> {
+public abstract class ViewCell<VM extends ViewModel> extends FrameLayout implements ViewHolder.IViewDisplayer {
     private VM mViewModel;
 
     public ViewCell(@NonNull Context context) {
@@ -35,21 +35,21 @@ public abstract class ViewCell<VM extends ViewModel> extends FrameLayout impleme
     /**
      * UI初始化方法，只会执行一次
      */
-    public void onInitialize(@NonNull VM viewModel) {
-
-    }
+    public abstract void onInitialize(@NonNull VM viewModel);
 
     public abstract void onDisplay(@NonNull VM viewModel);
 
     @Override
-    public final void onViewInitialize(@NonNull View view, @NonNull VM viewModel) {
-        mViewModel = viewModel;
+    @SuppressWarnings("unchecked")
+    public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel) {
+        mViewModel = (VM) viewModel;
         onInitialize(mViewModel);
     }
 
     @Override
-    public final void onViewDisplay(@NonNull View view, @NonNull VM viewModel) {
-        mViewModel = viewModel;
+    @SuppressWarnings("unchecked")
+    public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel) {
+        mViewModel = (VM) viewModel;
         onDisplay(mViewModel);
     }
 }

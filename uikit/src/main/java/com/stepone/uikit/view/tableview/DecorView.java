@@ -50,7 +50,6 @@ final class DecorView extends FrameLayout {
      * 初始化操作，只会执行一次，优先根据resource id 装饰content view
      * 如果没有resource id ,则根据view model中的ViewClass来装饰content view
      */
-    @SuppressWarnings("unchecked")
     public void onPrepare(@NonNull ViewModel viewModel) {
         if (isPrepared) {
             return;
@@ -71,12 +70,13 @@ final class DecorView extends FrameLayout {
             return;
         }
 
-        Class clz = mViewModel.getViewClazz();
+        @SuppressWarnings("unchecked")
+        Class<? extends ViewCell> clz = mViewModel.getViewClazz();
         if (clz != null && ViewCell.class.isAssignableFrom(clz)) {
             try {
-                Constructor constructor = clz.getDeclaredConstructor(Context.class);
+                Constructor<? extends ViewCell> constructor = clz.getDeclaredConstructor(Context.class);
                 constructor.setAccessible(true);
-                mContentView = (ViewCell) constructor.newInstance(getContext());
+                mContentView = constructor.newInstance(getContext());
                 removeAllViews();
                 addView(mContentView);
 
@@ -90,7 +90,7 @@ final class DecorView extends FrameLayout {
         }
     }
 
-    @SuppressWarnings("unchecked")
+
     public void onDisplay(@NonNull ViewModel viewModel) {
         mViewModel = viewModel;
 

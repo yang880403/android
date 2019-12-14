@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
  * Date: 2019-12-13 17:46
  */
 
-public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<ViewCell, D> implements ViewHolder.IViewDisplayer<ResViewModel> {
+public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<ViewCell, D> implements ViewHolder.IViewDisplayer {
 
     @LayoutRes
     private  int layoutId;
@@ -41,20 +41,20 @@ public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<V
         return (VH) new ViewHolder(view);
     }
 
-    protected abstract void onBindViewHolder(@NonNull VH holder);
+    protected abstract void onBindView(@NonNull VH holder);
     protected abstract void onDisplayView(@NonNull VH holder);
 
     @Override
-    public final void onViewInitialize(@NonNull View view, @NonNull ResViewModel viewModel) {
+    public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel) {
         if (viewHolder == null) {
             viewHolder = onCreateViewHolder(view);
         }
 
-        onBindViewHolder(viewHolder);
+        onBindView(viewHolder);
     }
 
     @Override
-    public final void onViewDisplay(@NonNull View view, @NonNull ResViewModel viewModel) {
+    public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel) {
         if (viewHolder != null) {
             onDisplayView(viewHolder);
         }
