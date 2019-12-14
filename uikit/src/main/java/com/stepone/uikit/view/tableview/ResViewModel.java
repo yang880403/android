@@ -1,13 +1,9 @@
 package com.stepone.uikit.view.tableview;
 
-import android.util.SparseArray;
 import android.view.View;
-import android.widget.TextView;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 
 /**
  * FileName: ResViewModel
@@ -15,18 +11,18 @@ import androidx.annotation.StringRes;
  * Date: 2019-12-13 17:46
  */
 
-public abstract class ResViewModel<E,  VH extends ResViewModel.ViewHolder> extends ViewModel<ContentView, E> {
+public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<ViewCell, D> implements ViewHolder.IViewDisplayer<ResViewModel> {
 
-    private @LayoutRes int layoutId;
+    @LayoutRes
+    private  int layoutId;
     private VH viewHolder;
 
-    public ResViewModel(@LayoutRes int resId, E model) {
-        super(model);
+    public ResViewModel(@LayoutRes int resId) {
         layoutId = resId;
     }
 
     @Override
-    Class<ContentView> getViewClazz() {
+    Class<ViewCell> getViewClazz() {
         return null;
     }
 
@@ -36,8 +32,20 @@ public abstract class ResViewModel<E,  VH extends ResViewModel.ViewHolder> exten
         return layoutId;
     }
 
+    /**
+     * 子类可通过重写此方法定制VH
+     */
+    @NonNull
+    @SuppressWarnings("unchecked")
+    protected VH onCreateViewHolder(View view) {
+        return (VH) new ViewHolder(view);
+    }
+
+    protected abstract void onBindViewHolder(@NonNull VH holder);
+    protected abstract void onDisplayView(@NonNull VH holder);
+
     @Override
-    void onBindView(@NonNull View view) {
+    public final void onViewInitialize(@NonNull View view, @NonNull ResViewModel viewModel) {
         if (viewHolder == null) {
             viewHolder = onCreateViewHolder(view);
         }
@@ -45,49 +53,10 @@ public abstract class ResViewModel<E,  VH extends ResViewModel.ViewHolder> exten
         onBindViewHolder(viewHolder);
     }
 
-    @NonNull
-    @SuppressWarnings("unchecked")
-    protected VH onCreateViewHolder(View view) {
-        return (VH) new ViewHolder(view);
-    }
-
-    protected abstract void onBindViewHolder(VH holder);
-
-    public static class ViewHolder {
-        private View mView;
-        private SparseArray<View> mViewCache = new SparseArray<>();
-
-        protected ViewHolder(@NonNull View view) {
-            mView = view;
-        }
-
-        public View itemView() {
-            return mView;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T extends View> T getView(@IdRes int viewId) {
-            View view = mViewCache.get(viewId);
-            if (view == null) {
-                view = mView.findViewById(viewId);
-                mViewCache.put(viewId, view);
-            }
-
-            return (T) view;
-        }
-
-        public ViewHolder setText(@IdRes int viewId, CharSequence text) {
-            TextView textView = getView(viewId);
-            textView.setText(text);
-
-            return this;
-        }
-
-        public ViewHolder setText(@IdRes int viewId, @StringRes int strId) {
-            TextView textView = getView(viewId);
-            textView.setText(strId);
-
-            return this;
+    @Override
+    public final void onViewDisplay(@NonNull View view, @NonNull ResViewModel viewModel) {
+        if (viewHolder != null) {
+            onDisplayView(viewHolder);
         }
     }
 }

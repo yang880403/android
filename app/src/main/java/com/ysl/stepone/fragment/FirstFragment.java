@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepone.uikit.view.tableview.ClazzViewModel;
-import com.stepone.uikit.view.tableview.ContentView;
 import com.stepone.uikit.view.tableview.RecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.ResViewModel;
+import com.stepone.uikit.view.tableview.ViewCell;
+import com.stepone.uikit.view.tableview.ViewHolder;
 import com.stepone.uikit.view.utils.DisplayUtils;
 import com.ysl.stepone.R;
 
@@ -62,23 +63,28 @@ public class FirstFragment extends BaseFragment {
     }
 
 
-    private static class TestVM extends ResViewModel<Integer, ResViewModel.ViewHolder> {
+    private static class TestVM extends ResViewModel<Integer, ViewHolder> {
         TestVM(int i) {
-            super(R.layout.cell_test, i);
+            super(R.layout.cell_test);
+            setPayload(i);
         }
 
         @Override
         protected void onBindViewHolder(ViewHolder holder) {
-            holder.setText(R.id.title_view, "auto bind text " + getData());
+        }
+
+        @Override
+        protected void onDisplayView(@NonNull ViewHolder holder) {
+            holder.setText(R.id.title_view, "auto bind text " + getPayload());
         }
     }
 
-    private static class GapVM extends ClazzViewModel<GapVM.GapCell, Void>  {
+    private static class GapVM extends ClazzViewModel<GapVM.GapCell, Void> {
         private GapVM() {
-            super(GapCell.class, null);
+            super(GapCell.class);
         }
 
-        private static class GapCell extends ContentView<GapVM> {
+        private static class GapCell extends ViewCell<GapVM> {
 
             public GapCell(@NonNull Context context) {
                 super(context);
@@ -88,9 +94,10 @@ public class FirstFragment extends BaseFragment {
             }
 
             @Override
-            public void onDisplay(GapVM viewModel) {
+            public void onDisplay(@NonNull GapVM viewModel) {
 
             }
+
         }
     }
 }

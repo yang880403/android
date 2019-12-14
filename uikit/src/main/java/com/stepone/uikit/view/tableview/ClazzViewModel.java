@@ -1,7 +1,5 @@
 package com.stepone.uikit.view.tableview;
 
-import android.view.View;
-
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
@@ -11,15 +9,16 @@ import androidx.annotation.NonNull;
  * Date: 2019-12-13 17:46
  */
 
-public class ClazzViewModel<V extends ContentView, E> extends ViewModel<V, E> {
+public class ClazzViewModel<V extends ViewCell, D> extends ViewModel<V, D> {
+    @NonNull
     private Class<V> viewClazz;
 
-    public ClazzViewModel(Class<V> cls, E model) {
-        super(model);
+    public ClazzViewModel(@NonNull Class<V> cls) {
         viewClazz = cls;
     }
 
     @Override
+    @NonNull
     Class<V> getViewClazz() {
         return viewClazz;
     }
@@ -28,10 +27,5 @@ public class ClazzViewModel<V extends ContentView, E> extends ViewModel<V, E> {
     @LayoutRes
     int getLayoutResource() {
         return 0;
-    }
-
-    @Override
-    void onBindView(@NonNull View view) {
-
     }
 }
