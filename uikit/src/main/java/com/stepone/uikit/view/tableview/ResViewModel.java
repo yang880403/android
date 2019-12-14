@@ -11,18 +11,17 @@ import androidx.annotation.NonNull;
  * Date: 2019-12-13 17:46
  */
 
-public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<ViewCell, D> implements ViewHolder.IViewDisplayer {
+public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<D> implements ViewHolder.IViewDisplayer {
 
     @LayoutRes
     private  int layoutId;
-    private VH viewHolder;
 
     public ResViewModel(@LayoutRes int resId) {
         layoutId = resId;
     }
 
     @Override
-    Class<ViewCell> getViewClazz() {
+    Class getViewClazz() {
         return null;
     }
 
@@ -46,17 +45,19 @@ public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<V
 
     @Override
     public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel) {
-        if (viewHolder == null) {
-            viewHolder = onCreateViewHolder(view);
-        }
-
+        VH viewHolder = onCreateViewHolder(view);
+        ViewHolder.Factory.put(view, viewHolder);
         onBindView(viewHolder);
     }
 
     @Override
     public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel) {
-        if (viewHolder != null) {
-            onDisplayView(viewHolder);
+        @SuppressWarnings("unchecked")
+        VH viewHolder = (VH) ViewHolder.Factory.get(view);
+        if (viewHolder == null) {
+            throw new NullPointerException("view holder is null");
         }
+
+        onDisplayView(viewHolder);
     }
 }

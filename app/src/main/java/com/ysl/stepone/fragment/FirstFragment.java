@@ -3,6 +3,7 @@ package com.ysl.stepone.fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepone.uikit.view.tableview.ClazzViewModel;
+import com.stepone.uikit.view.tableview.IViewModel;
 import com.stepone.uikit.view.tableview.RecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.ResViewModel;
-import com.stepone.uikit.view.tableview.ViewCell;
 import com.stepone.uikit.view.tableview.ViewHolder;
-import com.stepone.uikit.view.tableview.ViewModel;
 import com.stepone.uikit.view.utils.DisplayUtils;
 import com.ysl.stepone.R;
 
@@ -58,16 +58,32 @@ public class FirstFragment extends BaseFragment {
         for (int i = 0; i < 22; i++) {
             if (i % 2 == 0) {
                 TestVM vm = new TestVM(i);
-                vm.setItemClickListener(new ViewModel.OnClickListener() {
+                vm.setClickListener(R.id.title_view, new IViewModel.OnClickListener() {
                     @Override
-                    public void onClick(View view, ViewModel viewModel) {
+                    public void onClick(View view, IViewModel viewModel) {
+                        TestVM testVM = (TestVM) viewModel;
+                        Toast.makeText(getContext(), "TAP on TITLE VIEW at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                vm.setItemClickListener(new IViewModel.OnClickListener() {
+                    @Override
+                    public void onClick(View view, IViewModel viewModel) {
                         TestVM testVM = (TestVM) viewModel;
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 mAdapter.add(vm);
             } else {
-                mAdapter.add(new GapVM());
+                GapVM gapVM = new GapVM(i);
+                gapVM.setItemClickListener(new IViewModel.OnClickListener() {
+                    @Override
+                    public void onClick(View view, IViewModel viewModel) {
+                        GapVM vm = (GapVM) viewModel;
+                        Toast.makeText(getContext(), "TAP gap at index "+vm.getPayload(), Toast.LENGTH_SHORT).show();
+                        Log.e("TT", "class is "+viewModel.getClass()+" data = "+vm.getPayload());
+                    }
+                });
+                mAdapter.add(gapVM);
             }
         }
     }
@@ -81,7 +97,7 @@ public class FirstFragment extends BaseFragment {
 
         @Override
         protected void onBindView(@NonNull ViewHolder holder) {
-            holder.setItemClickListener(getItemClickListener(), this);
+
         }
 
         @Override
@@ -90,12 +106,13 @@ public class FirstFragment extends BaseFragment {
         }
     }
 
-    private static class GapVM extends ClazzViewModel<GapVM.GapCell, Void> {
-        private GapVM() {
+    private static class GapVM extends ClazzViewModel<Integer> {
+        private GapVM(int i) {
             super(GapCell.class);
+            setPayload(i);
         }
 
-        private static class GapCell extends ViewCell<GapVM> {
+        private static class GapCell extends ClazzViewModel.ViewCell<GapVM> {
 
             public GapCell(@NonNull Context context) {
                 super(context);

@@ -2,6 +2,7 @@ package com.stepone.uikit.view.tableview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,9 @@ import java.lang.reflect.Constructor;
  * Date: 2019-12-13 14:06
  */
 
+/**
+ * 装饰模式，使用者通过填充contentView来定制UI
+ */
 final class DecorView extends FrameLayout {
     private ViewModel mViewModel;
 
@@ -47,8 +51,10 @@ final class DecorView extends FrameLayout {
     }
 
     /**
-     * 初始化操作，只会执行一次，优先根据resource id 装饰content view
-     * 如果没有resource id ,则根据view model中的ViewClass来装饰content view
+     * UI初始化操作，只会执行一次，当出现UI复用的时候，不再执行此方法
+     * 优先根据layout id 装饰 content view
+     * 如果layoutID无效,则根据view model中的ViewClass来装饰content view
+     * 如果没有view class，则直接向用户显示 DecorView
      */
     public void onPrepare(@NonNull ViewModel viewModel) {
         if (isPrepared) {
@@ -66,23 +72,29 @@ final class DecorView extends FrameLayout {
             if (mViewModel instanceof ViewHolder.IViewDisplayer) {
                 ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mViewModel;
                 displayer.onViewInitialize(mContentView, mViewModel);
+
+                //事件绑定
+                autoBindViewListener();
             }
             return;
         }
 
-        @SuppressWarnings("unchecked")
-        Class<? extends ViewCell> clz = mViewModel.getViewClazz();
-        if (clz != null && ViewCell.class.isAssignableFrom(clz)) {
+        Class clz = mViewModel.getViewClazz();
+        if (clz != null && ClazzViewModel.ViewCell.class.isAssignableFrom(clz)) {
             try {
-                Constructor<? extends ViewCell> constructor = clz.getDeclaredConstructor(Context.class);
+                @SuppressWarnings("unchecked")
+                Constructor constructor = clz.getDeclaredConstructor(Context.class);
                 constructor.setAccessible(true);
-                mContentView = constructor.newInstance(getContext());
+                mContentView = (ClazzViewModel.ViewCell) constructor.newInstance(getContext());
                 removeAllViews();
                 addView(mContentView);
 
                 if (mContentView instanceof ViewHolder.IViewDisplayer) {
                     ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mContentView;
                     displayer.onViewInitialize(mContentView, mViewModel);
+
+                    //事件绑定
+                    autoBindViewListener();
                 }
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -96,7 +108,7 @@ final class DecorView extends FrameLayout {
 
         if (mContentView != null) {
             ViewHolder.IViewDisplayer displayer = null;
-            if (mContentView instanceof ViewCell) {
+            if (mContentView instanceof ClazzViewModel.ViewCell) {
                 displayer = (ViewHolder.IViewDisplayer) mContentView;
             } else if (mViewModel instanceof ViewHolder.IViewDisplayer){
                 displayer = (ViewHolder.IViewDisplayer) mViewModel;
@@ -104,6 +116,80 @@ final class DecorView extends FrameLayout {
 
             if (displayer != null) {
                 displayer.onViewDisplay(mContentView, mViewModel);
+            }
+        }
+    }
+
+    /**
+     * content view 初始化完成之后，自动将viewmodel中记录的listener绑定到对应的view上
+     * 为确保让复用后的view也能正常的相应事件，需要将事件监听器设置为全局对象，而不能设置为匿名内部类对象
+     */
+    private final OnClickListener itemClick = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ViewModel.OnClickListener click = mViewModel.getItemClickListener();
+            click.onClick(v, mViewModel);
+        }
+    };
+
+    private final OnLongClickListener itemLongClick = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            ViewModel.OnLongClickListener longClick = mViewModel.getItemLongClickListener();
+            return longClick.onLongClick(v, mViewModel);
+        }
+    };
+
+    private final OnClickListener viewClick = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            @SuppressWarnings("unchecked")
+            SparseArray<ViewModel.OnClickListener> clicks = mViewModel.getClickListeners();
+            ViewModel.OnClickListener click = clicks.get(v.getId());
+            if (click != null) {
+                click.onClick(v, mViewModel);
+            }
+        }
+    };
+
+    private final OnLongClickListener viewLongClick = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            @SuppressWarnings("unchecked")
+            SparseArray<ViewModel.OnLongClickListener> longClicks = mViewModel.getLongClickListeners();
+            ViewModel.OnLongClickListener longClick = longClicks.get(v.getId());
+            if (longClick != null) {
+                return longClick.onLongClick(v, mViewModel);
+            }
+            return false;
+        }
+    };
+
+    private void autoBindViewListener() {
+        if (mContentView == null || mViewModel == null) {
+            return;
+        }
+
+        mContentView.setOnClickListener(itemClick);
+        mContentView.setOnLongClickListener(itemLongClick);
+
+        @SuppressWarnings("unchecked")
+        SparseArray<ViewModel.OnClickListener> clicks = mViewModel.getClickListeners();
+        for (int i = 0; i < clicks.size(); i++) {
+            int viewId = clicks.keyAt(i);
+            View view = mContentView.findViewById(viewId);
+            if (view != null) {
+                view.setOnClickListener(viewClick);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        SparseArray<ViewModel.OnLongClickListener> longClicks = mViewModel.getLongClickListeners();
+        for (int i = 0; i < longClicks.size(); i++) {
+            int viewId = longClicks.keyAt(i);
+            View view = mContentView.findViewById(viewId);
+            if (view != null) {
+                view.setOnLongClickListener(viewLongClick);
             }
         }
     }

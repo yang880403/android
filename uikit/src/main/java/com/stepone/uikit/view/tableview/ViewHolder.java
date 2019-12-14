@@ -8,6 +8,8 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
+import java.util.WeakHashMap;
+
 /**
  * FileName: ViewHolder
  * Author: shiliang
@@ -17,13 +19,32 @@ public class ViewHolder {
     private View mView;
     private SparseArray<View> mViewCache = new SparseArray<>();
 
+    protected ViewHolder(@NonNull View view) {
+        mView = view;
+    }
+
     interface IViewDisplayer {
+        /**
+         * 可在此处进行UI初始化及事件绑定等操作，每个view只会执行一次，复用时将不再执行
+         */
         void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel);
+
+        /**
+         * UI展示
+         */
         void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel);
     }
 
-    protected ViewHolder(@NonNull View view) {
-        mView = view;
+    static class Factory {
+        private static final WeakHashMap<View, ViewHolder> mViewHolderMap = new WeakHashMap<>(50);
+
+        static ViewHolder get(View view) {
+            return mViewHolderMap.get(view);
+        }
+
+        static void put(View view, ViewHolder viewHolder) {
+            mViewHolderMap.put(view, viewHolder);
+        }
     }
 
     public View itemView() {
@@ -39,33 +60,6 @@ public class ViewHolder {
         }
 
         return (T) view;
-    }
-
-    public ViewHolder setOnClickListener(@IdRes int viewId, final ViewModel.OnClickListener listener, final ViewModel viewModel) {
-        if (listener != null) {
-            View view = getView(viewId);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onClick(v, viewModel);
-                }
-            });
-        }
-
-        return this;
-    }
-
-    public ViewHolder setItemClickListener(final ViewModel.OnClickListener listener, final ViewModel viewModel) {
-        if (listener != null) {
-            mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onClick(mView, viewModel);
-                }
-            });
-        }
-
-        return this;
     }
 
     public ViewHolder setText(@IdRes int viewId, CharSequence text) {
