@@ -2,8 +2,8 @@ package com.ysl.stepone.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepone.uikit.view.tableview.ClazzViewModel;
@@ -35,6 +34,12 @@ public class FirstFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getSTActivity().setPageTitle("FIRST VIEW");
     }
 
@@ -43,7 +48,13 @@ public class FirstFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first_tableview, container, false);
         mTableView = view.findViewById(R.id.tableview);
-        mTableView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+            }
+        });
         mTableView.setAdapter(mAdapter);
         buildDatasource();
         return view;
@@ -56,42 +67,22 @@ public class FirstFragment extends BaseFragment {
 
     private void buildDatasource() {
         for (int i = 0; i < 22; i++) {
-            if (i % 2 == 0) {
-                TestVM vm = new TestVM(i);
-                vm.setClickListener(R.id.title_view, new IViewModel.OnClickListener() {
-                    @Override
-                    public void onClick(View view, IViewModel viewModel) {
-                        TestVM testVM = (TestVM) viewModel;
-                        Toast.makeText(getContext(), "TAP on TITLE VIEW at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                vm.setItemClickListener(new IViewModel.OnClickListener() {
-                    @Override
-                    public void onClick(View view, IViewModel viewModel) {
-                        TestVM testVM = (TestVM) viewModel;
-                        Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                mAdapter.add(vm);
-            } else {
-                GapVM gapVM = new GapVM(i);
-                gapVM.setItemClickListener(new IViewModel.OnClickListener() {
-                    @Override
-                    public void onClick(View view, IViewModel viewModel) {
-                        GapVM vm = (GapVM) viewModel;
-                        Toast.makeText(getContext(), "TAP gap at index "+vm.getPayload(), Toast.LENGTH_SHORT).show();
-                        Log.e("TT", "class is "+viewModel.getClass()+" data = "+vm.getPayload());
-                    }
-                });
-                mAdapter.add(gapVM);
-            }
+            TestVM vm = new TestVM(i);
+            vm.setItemClickListener(new IViewModel.OnClickListener() {
+                @Override
+                public void onClick(View view, IViewModel viewModel) {
+                    TestVM testVM = (TestVM) viewModel;
+                    Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            mAdapter.add(vm);
         }
     }
 
 
     private static class TestVM extends ResViewModel<Integer, ViewHolder> {
         TestVM(int i) {
-            super(R.layout.cell_test);
+            super(R.layout.cell_card);
             setPayload(i);
         }
 
@@ -102,7 +93,7 @@ public class FirstFragment extends BaseFragment {
 
         @Override
         protected void onDisplayView(@NonNull ViewHolder holder) {
-            holder.setText(R.id.title_view, "auto bind text " + getPayload());
+            holder.setText(R.id.title_view, getPayload()+"");
         }
     }
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_margin="5dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="10dp"
+        card_view:contentPadding="10dp"
+        card_view:cardElevation="5dp"
+        card_view:cardBackgroundColor="@android:color/white"
+        android:id="@+id/card_view">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="73dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/arrive_car"/>
+        <TextView
+            android:id="@+id/title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text"
+            android:layout_gravity="bottom|center_horizontal" />
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
