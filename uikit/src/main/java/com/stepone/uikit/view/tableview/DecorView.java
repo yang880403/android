@@ -128,7 +128,9 @@ final class DecorView extends FrameLayout {
         @Override
         public void onClick(View v) {
             ViewModel.OnClickListener click = mViewModel.getItemClickListener();
-            click.onClick(v, mViewModel);
+            if (click != null) {
+                click.onClick(v, mViewModel);
+            }
         }
     };
 
@@ -136,6 +138,9 @@ final class DecorView extends FrameLayout {
         @Override
         public boolean onLongClick(View v) {
             ViewModel.OnLongClickListener longClick = mViewModel.getItemLongClickListener();
+            if (longClick == null) {
+                return false;
+            }
             return longClick.onLongClick(v, mViewModel);
         }
     };
