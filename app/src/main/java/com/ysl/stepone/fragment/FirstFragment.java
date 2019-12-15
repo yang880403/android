@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepone.uikit.view.tableview.ClazzViewModel;
@@ -53,6 +54,33 @@ public class FirstFragment extends BaseFragment {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
+                outRect.set(10, 0, 5, 0);
+            }
+        });
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int t = position % 7;
+                switch (t) {
+                    case 0:
+                    case 3:
+                        return 1;
+                    case 4:
+                    case 5:
+                        return 3;
+                }
+
+                return 2;
+            }
+        });
+        mTableView.setLayoutManager(layoutManager);
+        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                outRect.set(0, 5, 0, 10);
             }
         });
         mTableView.setAdapter(mAdapter);
