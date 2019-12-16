@@ -82,6 +82,7 @@ public class FirstFragment extends BaseFragment {
                 return 2;
             }
         });
+
 //        mTableView.setLayoutManager(layoutManager);
 //        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
 //            @Override
