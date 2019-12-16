@@ -40,14 +40,14 @@ public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<D
         return (VH) new ViewHolder(view);
     }
 
-    protected abstract void onBindView(@NonNull VH holder);
+    protected abstract void onInitializeView(@NonNull VH holder);
     protected abstract void onDisplayView(@NonNull VH holder);
 
     @Override
     public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel) {
         VH viewHolder = onCreateViewHolder(view);
         ViewHolder.Factory.put(view, viewHolder);
-        onBindView(viewHolder);
+        onInitializeView(viewHolder);
     }
 
     @Override

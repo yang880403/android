@@ -1,5 +1,6 @@
 package com.ysl.stepone.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +32,7 @@ import com.ysl.stepone.R;
 
 public class FirstFragment extends BaseFragment {
     private RecyclerView mTableView;
-    private RecyclerViewAdapter mAdapter = new RecyclerViewAdapter();
+    private RecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,20 +46,25 @@ public class FirstFragment extends BaseFragment {
         getSTActivity().setPageTitle("FIRST VIEW");
     }
 
+    @SuppressLint("WrongConstant")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first_tableview, container, false);
         mTableView = view.findViewById(R.id.tableview);
+        mAdapter = new RecyclerViewAdapter(mTableView);
+//        mAdapter.setNeedReverseLayout(true);
+//        mAdapter.setLayoutOrientation(LinearLayout.HORIZONTAL);
 
-        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.set(10, 0, 5, 0);
-            }
-        });
+//        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//            @Override
+//            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+//                super.getItemOffsets(outRect, view, parent, state);
+//                outRect.set(10, 0, 5, 0);
+//            }
+//        });
 
+        mAdapter.setItemSpace(10, 80, 47);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -75,14 +82,14 @@ public class FirstFragment extends BaseFragment {
                 return 2;
             }
         });
-        mTableView.setLayoutManager(layoutManager);
-        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.set(0, 5, 0, 10);
-            }
-        });
+//        mTableView.setLayoutManager(layoutManager);
+//        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//            @Override
+//            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+//                super.getItemOffsets(outRect, view, parent, state);
+//                outRect.set(0, 5, 0, 10);
+//            }
+//        });
         mTableView.setAdapter(mAdapter);
         buildDatasource();
         return view;
@@ -115,7 +122,7 @@ public class FirstFragment extends BaseFragment {
         }
 
         @Override
-        protected void onBindView(@NonNull ViewHolder holder) {
+        protected void onInitializeView(@NonNull ViewHolder holder) {
 
         }
 
