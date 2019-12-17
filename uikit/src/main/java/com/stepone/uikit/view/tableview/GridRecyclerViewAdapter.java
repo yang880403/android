@@ -38,20 +38,50 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
     @NonNull
     @Override
     protected RecyclerView.LayoutManager onBindLayoutManager(int orientation, boolean reverseLayout) {
+        int count = mSpanCount > 0 ? mSpanCount : 1;
         if (mLayoutManager == null) {
-            mLayoutManager = new GridLayoutManager(getRecyclerView().getContext(), mSpanCount, orientation, reverseLayout);
+            mLayoutManager = new GridLayoutManager(getRecyclerView().getContext(), count, orientation, reverseLayout);
             /**
              * 智能填充
              * 根据VM设定的spanSize minSpanSize maxSpanSize,智能计算其layoutSpanSize
-             * 优先保证当前视图正常显示（即不优先做缩小处理，后续可将此逻辑封装成策略，让用户选择）
+             * 优先保证当前视图正常显示,若不能充满整行，再进行压缩优先策略
              */
             GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
                     ViewModel viewModel = getViewModel(position);
+                    if (viewModel == null) {
+                        return 0;
+                    }
+
+                    int remaining = mSpanCount;
+                    int spanIndex = 0;
+                    int spanGroupIndex = 0;
+                    ViewModel previousVM = getViewModel(position-1);
+                    if (previousVM != null) {
+                        remaining -= (previousVM.spanIndex + previousVM.layoutSpanSize);
+                        if (remaining > 0) {
+                            spanIndex = previousVM.spanIndex + previousVM.layoutSpanSize;
+                            spanGroupIndex = previousVM.spanGroupIndex;
+                        } else {//换行
+                            remaining = mSpanCount;
+                            spanGroupIndex = previousVM.spanGroupIndex+1;
+                            spanIndex = 0;
+                        }
+                    }
+
+                    //优化处理:如果viewmodel的span信息已经被提前计算好，则直接返回
+                    if (viewModel.spanIndex != ViewModel.INDEX_UNDEFINED &&
+                            viewModel.spanGroupIndex != ViewModel.INDEX_UNDEFINED &&
+                            viewModel.layoutSpanSize > 0 &&
+                            viewModel.layoutSpanSize <= remaining) {
+                        return viewModel.layoutSpanSize;
+                    }
+
+                    //优先确保当前视图正常显示
                     int size = viewModel.getSpanSize();
-                    int minSize = viewModel.getMinSpanSize();
-                    int maxSize = viewModel.getMaxSpanSize();
+                    final int minSize = viewModel.getMinSpanSize();
+                    final int maxSize = viewModel.getMaxSpanSize();
                     if (size <= 0) {
                         size = 1;
                     }
@@ -59,33 +89,61 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                     boolean canZoomIn = maxSize > size;//放大
                     boolean canZoomOut = minSize < size;//缩小
 
-                    ViewModel previousVM = getViewModel(position-1);
-                    ViewModel nextVM = getViewModel(position+1);
-                    int remaining = mSpanCount;
-                    if (previousVM != null) {
-                        remaining -= previousVM.spanIndex + previousVM.layoutSpanSize;
-                    }
+                    if (size >= remaining) {
+                        if (canZoomOut) {//缩小当前view至填充整行
+                            size = Math.max(minSize, remaining);
+                        }
+                        if (size > remaining && remaining < mSpanCount) {//缩小到极限也放置不下，则考虑换行
+                            spanIndex = 0;
+                            spanGroupIndex++;
 
-                    if (size > remaining && canZoomOut) {
-                        size = Math.max(minSize, remaining);
-                    } else if (nextVM != null) {
-                        int nextSize = nextVM.getSpanSize();
-                        int nextMinSize = nextVM.getMinSpanSize();
-
-                        if (size + minSize > remaining)
-                    }
-
-                    //step1 计算前一个view产生的影响
-                    if (position == 0) {
-                        viewModel.spanIndex = 0;
-                        viewModel.spanGroupIndex = 0;
-
+                            //换行后，重新计算
+                            remaining = mSpanCount;
+                            size = viewModel.getSpanSize();
+                            if (size > remaining) {
+                                if (canZoomOut) {
+                                    size = Math.max(minSize, remaining);
+                                }
+                            }
+                        }
                     } else {
+                        ViewModel nextVM = getViewModel(position+1);
+                        if (nextVM != null) {
+                            nextVM.spanIndex = spanIndex;
+                            nextVM.spanGroupIndex = spanGroupIndex;
 
+                            final int nextSize = nextVM.getSpanSize();
+                            final int nextMinSize = nextVM.getMinSpanSize();
 
-
+                            //若两个view缩小到极限，都无法在本行显示，此时应该尽量放大当前view至填充整行
+                            if (minSize + nextMinSize > remaining) {
+                                if (canZoomIn) {
+                                    size = Math.min(maxSize, remaining);
+                                }
+                                nextVM.clearSpanIndexCache();
+                            } else if (minSize + nextMinSize == remaining) {
+                                size = minSize;
+                                nextVM.layoutSpanSize = nextMinSize;
+                            } else if (minSize + nextMinSize < remaining) {
+                                //若下一个view缩小到极限，都无法在本行显示，此时应该尽量放大当前view至填充整行
+                                if (size + nextMinSize > remaining) {
+                                    if (canZoomIn) {
+                                        size = Math.min(maxSize, remaining);
+                                    }
+                                    nextVM.clearSpanIndexCache();
+                                } else if (size + nextMinSize == remaining) {//完美填充，提前计算nextVM的span
+                                    nextVM.layoutSpanSize = nextMinSize;
+                                } else if (size + nextSize <= remaining) {//完美填充，提前计算nextVM的span
+                                    nextVM.layoutSpanSize = nextSize;
+                                } else {
+                                    nextVM.layoutSpanSize = remaining -size;
+                                }
+                            }
+                        }
                     }
 
+                    viewModel.spanIndex = spanIndex;
+                    viewModel.spanGroupIndex = spanGroupIndex;
                     viewModel.layoutSpanSize = size;
                     return viewModel.layoutSpanSize;
                 }
@@ -97,6 +155,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
 
         mLayoutManager.setOrientation(orientation);
         mLayoutManager.setReverseLayout(reverseLayout);
+        mLayoutManager.setSpanCount(count);
         return mLayoutManager;
     }
 
@@ -130,11 +189,15 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             int layoutOrientation = getRecyclerViewLayoutOrientation();
             int iPos = parent.getChildLayoutPosition(view);
-            int spanIndex = mLayoutManager.getSpanSizeLookup().getSpanIndex(iPos, mSpanCount)+1;//从1开始，便于计算
-            int spanSize = mLayoutManager.getSpanSizeLookup().getSpanSize(iPos);
+            ViewModel viewModel = getViewModel(iPos);
+            if (viewModel == null) {
+                return;
+            }
+            int spanIndex = viewModel.getSpanIndex()+1;//从1开始，便于计算
+            int spanSize = viewModel.getSpanSize();
 
-            int Li = 0;
-            int Ri = 0;
+            int Li;
+            int Ri;
 
             //默认为AVERAGER_SPACE_STRATEGY_CENTER
             if (averageStrategy == AVERAGER_SPACE_STRATEGY_ALL) {

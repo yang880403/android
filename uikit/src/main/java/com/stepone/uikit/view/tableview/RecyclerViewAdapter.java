@@ -35,6 +35,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
     public RecyclerViewAdapter(@NonNull RecyclerView recyclerView, List<ViewModel> viewModels) {
         mRecyclerView = recyclerView;
+        mRecyclerView.setAdapter(this);
         if (viewModels != null) {
             mViewModels.addAll(viewModels);
         }
@@ -96,6 +97,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     public void add(ViewModel model) {
         if (model != null) {
             mViewModels.add(model);
+            notifyDataSetChanged();
         }
     }
 
