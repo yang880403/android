@@ -4,6 +4,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -62,10 +63,14 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
      * 子类需自定义合适的layout manager
      */
     @NonNull
-    protected abstract RecyclerView.LayoutManager onCreateLayoutManager(@RecyclerView.Orientation int orientation, boolean reverseLayout);
+    protected abstract RecyclerView.LayoutManager onBindLayoutManager(@RecyclerView.Orientation int orientation, boolean reverseLayout);
 
     private void bindLayoutManager() {
-        mRecyclerView.setLayoutManager(onCreateLayoutManager(mLayoutOrientation, mNeedReverseLayout));
+        mRecyclerView.setLayoutManager(onBindLayoutManager(mLayoutOrientation, mNeedReverseLayout));
+    }
+
+    protected void rebindLayoutManager() {
+        bindLayoutManager();
     }
 
     public void setLayoutOrientation(@RecyclerView.Orientation int orientation) {
@@ -120,6 +125,17 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         mViewModels.clear();
     }
 
+    @Nullable
+    public ViewModel getViewModel(int position) {
+        if (position < 0 || position >= mViewModels.size()) {
+            return null;
+        }
+        return mViewModels.get(position);
+    }
+
+    /**
+     * adapter 重载方法
+     */
     @Override
     public int getItemViewType(int position) {
         ViewModel viewModel = mViewModels.get(position);
