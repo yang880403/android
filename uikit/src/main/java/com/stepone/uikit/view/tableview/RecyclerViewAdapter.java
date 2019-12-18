@@ -24,6 +24,8 @@ import java.util.List;
  */
 
 public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "RecyclerViewAdapter";
+
     private List<ViewModel> mViewModels = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private @RecyclerView.Orientation int mLayoutOrientation;
@@ -97,7 +99,6 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     public void add(ViewModel model) {
         if (model != null) {
             mViewModels.add(model);
-            notifyDataSetChanged();
         }
     }
 

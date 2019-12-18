@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 
 public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
+    private static final String TAG = "GridRecyclerViewAdapter";
     private int mSpanCount;
     private GridLayoutManager mLayoutManager;
     private AverageRowItemSpaceDecoration mItemSpaceDecoration;
@@ -44,7 +46,8 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
             /**
              * 智能填充
              * 根据VM设定的spanSize minSpanSize maxSpanSize,智能计算其layoutSpanSize
-             * 优先保证当前视图正常显示,若不能充满整行，再进行压缩优先策略
+             * 优先保证当前视图正常显示,若不能充满整行，再进行压缩优先策略，即压缩当前view，尽量让下一个view与当前view显示在同一行，但尽量降低当前view压缩度
+             * 若spanSize设置为0，将导致recyclerview获取position出现偏差，所以，不允许spanSize小于1
              */
             GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
                 @Override
@@ -71,23 +74,20 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                     }
 
                     //优化处理:如果viewmodel的span信息已经被提前计算好，则直接返回
-                    if (viewModel.spanIndex != ViewModel.INDEX_UNDEFINED &&
-                            viewModel.spanGroupIndex != ViewModel.INDEX_UNDEFINED &&
-                            viewModel.layoutSpanSize > 0 &&
+                    if (viewModel.spanIndex != ViewModel.UNSPECIFIC &&
+                            viewModel.spanGroupIndex != ViewModel.UNSPECIFIC &&
+                            viewModel.layoutSpanSize >= 0 &&
                             viewModel.layoutSpanSize <= remaining) {
                         return viewModel.layoutSpanSize;
                     }
 
-                    //优先确保当前视图正常显示
-                    int size = viewModel.getSpanSize();
-                    final int minSize = viewModel.getMinSpanSize();
-                    final int maxSize = viewModel.getMaxSpanSize();
-                    if (size <= 0) {
-                        size = 1;
-                    }
+                    //优先确保当前视图正常显示 (此时remaining > 0)
+                    int size = viewModel.getSpanSize();//大于0
+                    final int minSize = viewModel.getMinSpanSize();//大于0
+                    final int maxSize = viewModel.getMaxSpanSize();//大于0
 
-                    boolean canZoomIn = maxSize > size;//放大
-                    boolean canZoomOut = minSize < size;//缩小
+                    boolean canZoomIn = viewModel.canZoomIn();//放大
+                    boolean canZoomOut = viewModel.canZoomOut();//缩小
 
                     if (size >= remaining) {
                         if (canZoomOut) {//缩小当前view至填充整行
@@ -106,10 +106,9 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                                 }
                             }
                         }
-                    } else {
+                    } else {//size < remaining
                         ViewModel nextVM = getViewModel(position+1);
                         if (nextVM != null) {
-                            nextVM.spanIndex = spanIndex;
                             nextVM.spanGroupIndex = spanGroupIndex;
 
                             final int nextSize = nextVM.getSpanSize();
@@ -121,23 +120,25 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                                     size = Math.min(maxSize, remaining);
                                 }
                                 nextVM.clearSpanIndexCache();
-                            } else if (minSize + nextMinSize == remaining) {
+                            } else if (minSize + nextMinSize == remaining) {//可以完整填充，提前计算nextVM的span
                                 size = minSize;
                                 nextVM.layoutSpanSize = nextMinSize;
-                            } else if (minSize + nextMinSize < remaining) {
-                                //若下一个view缩小到极限，都无法在本行显示，此时应该尽量放大当前view至填充整行
-                                if (size + nextMinSize > remaining) {
-                                    if (canZoomIn) {
-                                        size = Math.min(maxSize, remaining);
-                                    }
-                                    nextVM.clearSpanIndexCache();
-                                } else if (size + nextMinSize == remaining) {//完美填充，提前计算nextVM的span
+                            } else {// minSize + nextMinSize < remaining 此时两个view可显示在同一行进行填充
+                                //若下一个view缩小到极限，当前view无法正常显示，则压缩当前view
+                                if (size + nextMinSize > remaining) { //由于此时size < remaining，nextMinSize > 0
+                                    size = remaining - nextMinSize;
+                                    nextVM.layoutSpanSize = minSize;
+                                } else if (size + nextMinSize == remaining) {//可以完整填充，提前计算nextVM的span, nextMinSize > 0
                                     nextVM.layoutSpanSize = nextMinSize;
                                 } else if (size + nextSize <= remaining) {//完美填充，提前计算nextVM的span
                                     nextVM.layoutSpanSize = nextSize;
-                                } else {
+                                } else {//size + nextMinSize < remaining && size + nextSize > remaining
                                     nextVM.layoutSpanSize = remaining -size;
                                 }
+                            }
+
+                            if (nextVM.spanGroupIndex != ViewModel.UNSPECIFIC) {
+                                nextVM.spanGroupIndex = spanIndex + size;
                             }
                         }
                     }
@@ -190,22 +191,35 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
             int layoutOrientation = getRecyclerViewLayoutOrientation();
             int iPos = parent.getChildLayoutPosition(view);
             ViewModel viewModel = getViewModel(iPos);
-            if (viewModel == null) {
+            if (viewModel == null || viewModel.layoutSpanSize <= 0) {
                 return;
             }
-            int spanIndex = viewModel.getSpanIndex()+1;//从1开始，便于计算
-            int spanSize = viewModel.getSpanSize();
+            final int spanIndex = viewModel.getSpanIndex()+1;//从1开始，便于计算
+            final int spanSize = viewModel.getLayoutSpanSize();
 
             int Li;
             int Ri;
 
             //默认为AVERAGER_SPACE_STRATEGY_CENTER
             if (averageStrategy == AVERAGER_SPACE_STRATEGY_ALL) {
-                Li = (int) (averageSpace * (mSpanCount+1-spanIndex) * 1.0f / mSpanCount);
-                Ri = (int) (averageSpace * ((spanIndex+spanSize-1)*1.0f/mSpanCount));
+                Li = Math.round(averageSpace * (mSpanCount+1-spanIndex) * 1.0f / mSpanCount);
+                Ri = Math.round(averageSpace * ((spanIndex+spanSize-1)*1.0f/mSpanCount));
             } else {
-                Li = (int) (averageSpace * (spanIndex-1) * 1.0f / mSpanCount);
-                Ri = (int) (averageSpace * (mSpanCount - spanIndex) * 1.0f / mSpanCount);
+                Li = Math.round(averageSpace * (spanIndex-1) * 1.0f / mSpanCount);
+                Ri = Math.round(averageSpace * (mSpanCount - spanIndex) * 1.0f / mSpanCount);
+            }
+
+            if (viewModel.layoutSpanSize == 0) {
+                Log.i(TAG, "index = "+iPos +
+                        "   row="+viewModel.spanGroupIndex +
+                        ",star_col=" + viewModel.spanIndex);
+            } else {
+                Log.i(TAG, "------------------------------------index = "+iPos +
+                        "   row="+viewModel.spanGroupIndex +
+                        ",star_col=" + viewModel.spanIndex +
+                        ",len="+viewModel.layoutSpanSize+
+                        "   L: " + Li +
+                        ",R: " + Ri);
             }
 
             if (layoutOrientation == RecyclerView.VERTICAL) {

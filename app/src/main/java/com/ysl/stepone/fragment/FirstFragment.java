@@ -51,7 +51,7 @@ public class FirstFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first_tableview, container, false);
         mTableView = view.findViewById(R.id.tableview);
-        mAdapter = new GridRecyclerViewAdapter(mTableView, 3);
+        mAdapter = new GridRecyclerViewAdapter(mTableView, 5);
 
 //        lAdapter = new LinearRecyclerViewAdapter(mTableView);
 //        mTableView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -67,7 +67,7 @@ public class FirstFragment extends BaseFragment {
 //            }
 //        });
 
-        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, null);
+        mAdapter.setAverageRowItemSpace(5, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, null);
 //        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
 //        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //            @Override
@@ -112,9 +112,10 @@ public class FirstFragment extends BaseFragment {
     }
 
     private void buildDatasource() {
-        for (int i = 0; i < 22; i++) {
+        for (int i = 0; i < 51; i++) {
             TestVM vm = new TestVM(i);
-            vm.setSpanSize(i % 3);
+            vm.setSpanSize((i % 2));
+//            vm.setSpanSize(1);
             vm.setItemClickListener(new IViewModel.OnClickListener() {
                 @Override
                 public void onClick(View view, IViewModel viewModel) {

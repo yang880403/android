@@ -14,18 +14,18 @@ import androidx.annotation.Nullable;
  */
 
 abstract class ViewModel<D> implements IViewModel {
-    public static final int INDEX_UNDEFINED = -1;
+    public static final int UNSPECIFIC = -1;
     private D payload;
 
     /*
     * 跨度值，便于自动填充，目前只在GridLayout中起作用
     * */
-    private int spanSize = 1;
-    private int minSpanSize = 1;
-    private int maxSpanSize = 1;
+    private int spanSize = 1;//最小值为1
+    private int minSpanSize = UNSPECIFIC;
+    private int maxSpanSize = UNSPECIFIC;
     int layoutSpanSize;//UI布局时，实际采用的spanSize，对用户只读，用户可据此进行UI适配
-    int spanIndex = INDEX_UNDEFINED; //缓存spanIndex
-    int spanGroupIndex = INDEX_UNDEFINED; //缓存spanGroupIndex
+    int spanIndex = UNSPECIFIC; //缓存spanIndex
+    int spanGroupIndex = UNSPECIFIC; //缓存spanGroupIndex
 
     /*设置事件监听器*/
     private OnClickListener itemClickListener;
@@ -42,23 +42,34 @@ abstract class ViewModel<D> implements IViewModel {
         this.payload = payload;
     }
 
+    //最小值为1
     public int getSpanSize() {
-        return spanSize;
+        return spanSize > 1 ? spanSize : 1;
     }
 
     public int getMinSpanSize() {
-        if (minSpanSize>=1 && spanSize > minSpanSize) {
+        if (canZoomOut()) {
             return minSpanSize;
         }
 
-        return spanSize;
+        return getSpanSize();
     }
 
     public int getMaxSpanSize() {
-        if (maxSpanSize >=1 && maxSpanSize > spanSize) {
+        if (canZoomIn()) {
             return maxSpanSize;
         }
-        return spanSize;
+        return getSpanSize();
+    }
+
+    //放大
+    public boolean canZoomIn() {
+        return maxSpanSize > 0 && maxSpanSize > getSpanSize();
+    }
+
+    //缩小
+    public boolean canZoomOut() {
+        return minSpanSize > 0 && minSpanSize < getSpanSize();
     }
 
     public int getLayoutSpanSize() {
@@ -74,8 +85,8 @@ abstract class ViewModel<D> implements IViewModel {
     }
 
     void clearSpanIndexCache() {
-        spanGroupIndex = INDEX_UNDEFINED;
-        spanIndex = INDEX_UNDEFINED;
+        spanGroupIndex = UNSPECIFIC;
+        spanIndex = UNSPECIFIC;
     }
 
     public void setSpanSize(int size) {
