@@ -67,7 +67,7 @@ public class FirstFragment extends BaseFragment {
 //            }
 //        });
 
-        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, getResources().getDrawable(R.drawable.ic_launcher_background, null));
+        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_CENTER, null);
 //        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
 //        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //            @Override
@@ -117,6 +117,7 @@ public class FirstFragment extends BaseFragment {
                 GapVM gapVM = new GapVM(i);
                 gapVM.setSpanSize(2);
                 mAdapter.add(gapVM);
+//                lAdapter.add(gapVM);
             } else {
                 TestVM vm = new TestVM(i);
                 vm.setSpanSize((i % 4));
@@ -129,6 +130,7 @@ public class FirstFragment extends BaseFragment {
                     }
                 });
                 mAdapter.add(vm);
+//                lAdapter.add(vm);
             }
         }
 
