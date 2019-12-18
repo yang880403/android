@@ -51,7 +51,7 @@ public class FirstFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first_tableview, container, false);
         mTableView = view.findViewById(R.id.tableview);
-        mAdapter = new GridRecyclerViewAdapter(mTableView, 5);
+        mAdapter = new GridRecyclerViewAdapter(mTableView, 2);
 
 //        lAdapter = new LinearRecyclerViewAdapter(mTableView);
 //        mTableView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -67,7 +67,7 @@ public class FirstFragment extends BaseFragment {
 //            }
 //        });
 
-        mAdapter.setAverageRowItemSpace(5, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, null);
+        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, getResources().getDrawable(R.drawable.ic_launcher_background, null));
 //        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
 //        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //            @Override
@@ -112,19 +112,27 @@ public class FirstFragment extends BaseFragment {
     }
 
     private void buildDatasource() {
-        for (int i = 0; i < 51; i++) {
-            TestVM vm = new TestVM(i);
-            vm.setSpanSize((i % 2));
-//            vm.setSpanSize(1);
-            vm.setItemClickListener(new IViewModel.OnClickListener() {
-                @Override
-                public void onClick(View view, IViewModel viewModel) {
-                    TestVM testVM = (TestVM) viewModel;
-                    Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            mAdapter.add(vm);
+        for (int i = 0; i < 55; i++) {
+            if (i % 3 == 0) {
+                GapVM gapVM = new GapVM(i);
+                gapVM.setSpanSize(2);
+                mAdapter.add(gapVM);
+            } else {
+                TestVM vm = new TestVM(i);
+                vm.setSpanSize((i % 4));
+                vm.setSpanSize(1);
+                vm.setItemClickListener(new IViewModel.OnClickListener() {
+                    @Override
+                    public void onClick(View view, IViewModel viewModel) {
+                        TestVM testVM = (TestVM) viewModel;
+                        Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                mAdapter.add(vm);
+            }
         }
+
+        mAdapter.notifyDataSetChanged();
     }
 
 
@@ -157,7 +165,7 @@ public class FirstFragment extends BaseFragment {
                 super(context);
                 ViewGroup.LayoutParams params = getLayoutParams();
                 params.height = DisplayUtils.dp2px(context, 44);
-                setBackgroundColor(Color.BLUE);
+                setBackgroundColor(Color.GREEN);
             }
 
             @Override

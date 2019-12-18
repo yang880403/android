@@ -1,10 +1,8 @@
 package com.stepone.uikit.view.tableview;
 
-import android.graphics.Color;
+import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -184,7 +182,8 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
         //间距单位均为px
         private int averageSpace;
         private int averageStrategy;
-        private Drawable spaceDrawable = new ColorDrawable(Color.TRANSPARENT);
+        private Drawable spaceDrawable;
+        private Rect rect;
 
         @Override
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
@@ -209,19 +208,6 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                 Ri = Math.round(averageSpace * (mSpanCount - spanIndex) * 1.0f / mSpanCount);
             }
 
-            if (viewModel.layoutSpanSize == 0) {
-                Log.i(TAG, "index = "+iPos +
-                        "   row="+viewModel.spanGroupIndex +
-                        ",star_col=" + viewModel.spanIndex);
-            } else {
-                Log.i(TAG, "------------------------------------index = "+iPos +
-                        "   row="+viewModel.spanGroupIndex +
-                        ",star_col=" + viewModel.spanIndex +
-                        ",len="+viewModel.layoutSpanSize+
-                        "   L: " + Li +
-                        ",R: " + Ri);
-            }
-
             if (layoutOrientation == RecyclerView.VERTICAL) {
                 outRect.left = Li;
                 outRect.right = Ri;
@@ -238,6 +224,32 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                 tmp = outRect.left;
                 outRect.left = outRect.right;
                 outRect.right = tmp;
+            }
+        }
+
+        private Rect obtainRect() {
+            if (rect == null) {
+                rect = new Rect();
+            }
+
+            rect.left = 0;
+            rect.right = 0;
+            rect.top = 0;
+            rect.bottom = 0;
+            return rect;
+        }
+
+        @Override
+        public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            super.onDraw(c, parent, state);
+            if (spaceDrawable != null) {
+                for (int i = 0; i < parent.getChildCount(); i++) {
+                    View child = parent.getChildAt(i);
+                    Rect outRect = obtainRect();
+                    parent.getDecoratedBoundsWithMargins(child, outRect);
+                    spaceDrawable.setBounds(rect);
+                    spaceDrawable.draw(c);
+                }
             }
         }
     }
@@ -257,5 +269,6 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
 
         mItemSpaceDecoration.averageSpace = DisplayUtils.dp2px(getRecyclerView().getContext(), space);
         mItemSpaceDecoration.averageStrategy = strategy;
+        mItemSpaceDecoration.spaceDrawable = drawable;
     }
 }
