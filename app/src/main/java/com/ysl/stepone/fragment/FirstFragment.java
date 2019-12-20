@@ -51,7 +51,7 @@ public class FirstFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first_tableview, container, false);
         mTableView = view.findViewById(R.id.tableview);
-        mAdapter = new GridRecyclerViewAdapter(mTableView, 2);
+        mAdapter = new GridRecyclerViewAdapter(mTableView, 4);
 
 //        lAdapter = new LinearRecyclerViewAdapter(mTableView);
 //        mTableView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -67,7 +67,7 @@ public class FirstFragment extends BaseFragment {
 //            }
 //        });
 
-        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_CENTER, null);
+        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, null);
 //        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
 //        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //            @Override
@@ -116,6 +116,8 @@ public class FirstFragment extends BaseFragment {
             if (i % 3 == 0) {
                 GapVM gapVM = new GapVM(i);
                 gapVM.setSpanSize(2);
+                gapVM.setFullSpan(true);
+                gapVM.setUseAutoAverageSpace(false);
                 mAdapter.add(gapVM);
 //                lAdapter.add(gapVM);
             } else {
@@ -150,6 +152,11 @@ public class FirstFragment extends BaseFragment {
         }
 
         @Override
+        protected void onWillDisplayView(@NonNull ViewHolder holder) {
+
+        }
+
+        @Override
         protected void onDisplayView(@NonNull ViewHolder holder) {
             holder.setText(R.id.title_view, getPayload()+"");
         }
@@ -171,12 +178,17 @@ public class FirstFragment extends BaseFragment {
             }
 
             @Override
-            public void onInitialize(@NonNull GapVM viewModel) {
+            protected void onInitialize(@NonNull GapVM viewModel) {
 
             }
 
             @Override
-            public void onDisplay(@NonNull GapVM viewModel) {
+            protected void onWillDisplay(@NonNull GapVM viewModel) {
+
+            }
+
+            @Override
+            protected void onDisplay(@NonNull GapVM viewModel) {
 
             }
 

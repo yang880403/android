@@ -23,6 +23,8 @@ abstract class ViewModel<D> implements IViewModel {
     private int spanSize = 1;//最小值为1
     private int minSpanSize = UNSPECIFIC;
     private int maxSpanSize = UNSPECIFIC;
+    private boolean isFullSpan = false;//占据整行，如果剩余span小于整行，则换行
+    private boolean useAutoAverageSpace = true;//是否使用自动均分行间距功能
     int layoutSpanSize;//UI布局时，实际采用的spanSize，对用户只读，用户可据此进行UI适配
     int spanIndex = UNSPECIFIC; //缓存spanIndex
     int spanGroupIndex = UNSPECIFIC; //缓存spanGroupIndex
@@ -84,6 +86,14 @@ abstract class ViewModel<D> implements IViewModel {
         return spanGroupIndex;
     }
 
+    public boolean isFullSpan() {
+        return isFullSpan;
+    }
+
+    public boolean useAutoAverageSpace() {
+        return useAutoAverageSpace;
+    }
+
     void clearSpanIndexCache() {
         spanGroupIndex = UNSPECIFIC;
         spanIndex = UNSPECIFIC;
@@ -99,6 +109,14 @@ abstract class ViewModel<D> implements IViewModel {
 
     public void setMaxSpanSize(int size) {
         maxSpanSize = size;
+    }
+
+    public void setFullSpan(boolean fullSpan) {
+        isFullSpan = fullSpan;
+    }
+
+    public void setUseAutoAverageSpace(boolean useAutoAverageSpace) {
+        this.useAutoAverageSpace = useAutoAverageSpace;
     }
 
     /*Click Listener*/

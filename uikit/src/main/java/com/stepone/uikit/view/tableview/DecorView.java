@@ -30,7 +30,7 @@ final class DecorView extends FrameLayout {
 
     @Nullable
     private View mContentView;
-    private boolean isPrepared = false;
+    private boolean isInitialized = false;
 
     public DecorView(@NonNull Context context) {
         super(context);
@@ -56,12 +56,12 @@ final class DecorView extends FrameLayout {
      * 如果layoutID无效,则根据view model中的ViewClass来装饰content view
      * 如果没有view class，则直接向用户显示 DecorView
      */
-    public void onPrepare(@NonNull ViewModel viewModel) {
-        if (isPrepared) {
+    public void onInitialize(@NonNull ViewModel viewModel) {
+        if (isInitialized) {
             return;
         }
 
-        isPrepared = true;
+        isInitialized = true;
         mViewModel = viewModel;
 
         int layoutResource = mViewModel.getLayoutResource();
@@ -115,6 +115,7 @@ final class DecorView extends FrameLayout {
             }
 
             if (displayer != null) {
+                displayer.onViewWillDisplay(mContentView, mViewModel);
                 displayer.onViewDisplay(mContentView, mViewModel);
             }
         }

@@ -157,7 +157,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         DecorView decorView = (DecorView) holder.itemView;
         ViewModel viewModel = mViewModels.get(position);
 
-        decorView.onPrepare(viewModel);
+        decorView.onInitialize(viewModel);
         decorView.onDisplay(viewModel);
     }
 

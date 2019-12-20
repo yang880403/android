@@ -41,6 +41,7 @@ public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<D
     }
 
     protected abstract void onInitializeView(@NonNull VH holder);
+    protected abstract void onWillDisplayView(@NonNull VH holder);
     protected abstract void onDisplayView(@NonNull VH holder);
 
     @Override
@@ -58,6 +59,7 @@ public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<D
             throw new NullPointerException("view holder is null");
         }
 
+        onWillDisplayView(viewHolder);
         onDisplayView(viewHolder);
     }
 }

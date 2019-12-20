@@ -43,7 +43,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
             mLayoutManager = new GridLayoutManager(getRecyclerView().getContext(), count, orientation, reverseLayout);
             /**
              * 智能填充
-             * 根据VM设定的spanSize minSpanSize maxSpanSize,智能计算其layoutSpanSize
+             * 根据VM设定的spanSize minSpanSize maxSpanSize,智能计算其layoutSpanSize，同时对spanIndex和spanGroupIndex进行缓存
              * 优先保证当前视图正常显示,若不能充满整行，再进行压缩优先策略，即压缩当前view，尽量让下一个view与当前view显示在同一行，但尽量降低当前view压缩度
              * 若spanSize设置为0，将导致recyclerview获取position出现偏差，所以，不允许spanSize小于1
              */
@@ -74,8 +74,20 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                     //优化处理:如果viewmodel的span信息已经被提前计算好，则直接返回
                     if (viewModel.spanIndex != ViewModel.UNSPECIFIC &&
                             viewModel.spanGroupIndex != ViewModel.UNSPECIFIC &&
-                            viewModel.layoutSpanSize >= 0 &&
+                            viewModel.layoutSpanSize > 0 &&
                             viewModel.layoutSpanSize <= remaining) {
+                        return viewModel.layoutSpanSize;
+                    }
+
+                    if (viewModel.isFullSpan()) {
+                        if (remaining < mSpanCount) {
+                            spanGroupIndex++;
+                            spanIndex = 0;
+                        }
+
+                        viewModel.spanIndex = spanIndex;
+                        viewModel.spanGroupIndex = spanGroupIndex;
+                        viewModel.layoutSpanSize = mSpanCount;
                         return viewModel.layoutSpanSize;
                     }
 
@@ -190,9 +202,12 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
             int layoutOrientation = getRecyclerViewLayoutOrientation();
             int iPos = parent.getChildLayoutPosition(view);
             ViewModel viewModel = getViewModel(iPos);
-            if (viewModel == null || viewModel.layoutSpanSize <= 0) {
+            if (viewModel == null || viewModel.layoutSpanSize <= 0
+                    || !viewModel.useAutoAverageSpace()
+                    || (viewModel.layoutSpanSize >= mSpanCount && averageStrategy == AVERAGER_SPACE_STRATEGY_CENTER)) {
                 return;
             }
+
             final int spanIndex = viewModel.getSpanIndex()+1;//从1开始，便于计算
             final int spanSize = viewModel.getLayoutSpanSize();
 
