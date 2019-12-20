@@ -2,11 +2,13 @@ package com.stepone.uikit.view.tableview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,21 +27,45 @@ import java.lang.reflect.Constructor;
 /**
  * 装饰模式，使用者通过填充contentView来定制UI
  */
-final class DecorView extends FrameLayout {
+final class DecorView extends RelativeLayout {
+    private final static int ID_VIEW_BOTTOM_DIVIDER = 1;
+    private final static int ID_VIEW_RIGHT_DIVIDER = 2;
     private ViewModel mViewModel;
+    private boolean isInitialized = false;
+    private View mBottomDivider;
+    private View mRightDivider;
+    private FrameLayout mContentParent;
 
     @Nullable
     private View mContentView;
-    private boolean isInitialized = false;
 
     public DecorView(@NonNull Context context) {
         super(context);
-        LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
+
+        mBottomDivider = new TextView(context);
+        mBottomDivider.setId(ID_VIEW_BOTTOM_DIVIDER);
+        LayoutParams blp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        blp.addRule(ALIGN_PARENT_BOTTOM);
+        addView(mBottomDivider, blp);
+
+        mRightDivider = new TextView(context);
+        mRightDivider.setId(ID_VIEW_RIGHT_DIVIDER);
+        LayoutParams rlp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+        rlp.addRule(ALIGN_PARENT_RIGHT);
+        addView(mRightDivider, rlp);
+
+        mContentParent = new FrameLayout(context);
+        LayoutParams flp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//        flp.addRule(ABOVE, ID_VIEW_BOTTOM_DIVIDER);
+//        flp.addRule(RIGHT_OF, ID_VIEW_RIGHT_DIVIDER);
+        addView(mContentParent, flp);
 
         /*Warning: is Decor Cell View*/
         TextView textView = new TextView(context);
         textView.setText("Warning: is Decor Cell View");
+
         textView.setTextSize(14);
         textView.setTextColor(Color.RED);
         textView.setWidth(-1);
@@ -47,7 +73,7 @@ final class DecorView extends FrameLayout {
         textView.setPadding(0, padding, 0, padding);
         textView.setGravity(Gravity.CENTER);
         textView.setBackgroundColor(Color.WHITE);
-        addView(textView);
+        mContentParent.addView(textView);
     }
 
     /**
@@ -66,8 +92,8 @@ final class DecorView extends FrameLayout {
 
         int layoutResource = mViewModel.getLayoutResource();
         if (layoutResource > 0) {
-            removeAllViews();
-            mContentView = LayoutInflater.from(getContext()).inflate(layoutResource, this);
+            mContentView = LayoutInflater.from(getContext()).inflate(layoutResource, this, false);
+            addContentView();
 
             if (mViewModel instanceof ViewHolder.IViewDisplayer) {
                 ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mViewModel;
@@ -86,8 +112,7 @@ final class DecorView extends FrameLayout {
                 Constructor constructor = clz.getDeclaredConstructor(Context.class);
                 constructor.setAccessible(true);
                 mContentView = (ClazzViewModel.ViewCell) constructor.newInstance(getContext());
-                removeAllViews();
-                addView(mContentView);
+                addContentView();
 
                 if (mContentView instanceof ViewHolder.IViewDisplayer) {
                     ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mContentView;
@@ -102,6 +127,47 @@ final class DecorView extends FrameLayout {
         }
     }
 
+    private void addContentView() {
+        mContentParent.removeAllViews();
+        mContentParent.addView(mContentView);
+    }
+
+    private void prepareView() {
+        if (mViewModel.bottomDividerHieght > 0) {
+            LayoutParams layoutParams = (LayoutParams) mBottomDivider.getLayoutParams();
+            if (mViewModel.bottomDividerHieght != layoutParams.height ||
+                    mViewModel.bottomDividerLeftInset != layoutParams.leftMargin ||
+                    mViewModel.bottomDividerRightInset != layoutParams.rightMargin) {
+                layoutParams.width = LayoutParams.MATCH_PARENT;
+                layoutParams.height = mViewModel.bottomDividerHieght;
+                layoutParams.leftMargin = mViewModel.bottomDividerLeftInset;
+                layoutParams.rightMargin = mViewModel.bottomDividerRightInset;
+                mBottomDivider.setLayoutParams(layoutParams);
+                mBottomDivider.setVisibility(VISIBLE);
+                mBottomDivider.setBackground(new ColorDrawable(Color.WHITE));
+            }
+        } else if (mBottomDivider.getVisibility() != GONE){
+            mBottomDivider.setVisibility(GONE);
+        }
+
+
+        if (mViewModel.rightDividerWidth > 0) {
+            LayoutParams layoutParams = (LayoutParams) mRightDivider.getLayoutParams();
+            if (mViewModel.rightDividerWidth != layoutParams.width ||
+                    mViewModel.rightDividerTopInset != layoutParams.topMargin ||
+                    mViewModel.rightDividerBottomInset != layoutParams.bottomMargin) {
+                layoutParams.height = LayoutParams.MATCH_PARENT;
+                layoutParams.width = mViewModel.rightDividerWidth;
+                layoutParams.topMargin = mViewModel.rightDividerTopInset;
+                layoutParams.bottomMargin = mViewModel.rightDividerBottomInset;
+                mRightDivider.setLayoutParams(layoutParams);
+                mRightDivider.setVisibility(VISIBLE);
+                mRightDivider.setBackground(new ColorDrawable(Color.WHITE));
+            }
+        } else if (mRightDivider.getVisibility() != GONE){
+            mRightDivider.setVisibility(GONE);
+        }
+    }
 
     public void onDisplay(@NonNull ViewModel viewModel) {
         mViewModel = viewModel;
@@ -115,7 +181,7 @@ final class DecorView extends FrameLayout {
             }
 
             if (displayer != null) {
-                displayer.onViewWillDisplay(mContentView, mViewModel);
+//                prepareView();
                 displayer.onViewDisplay(mContentView, mViewModel);
             }
         }

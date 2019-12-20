@@ -118,6 +118,8 @@ public class FirstFragment extends BaseFragment {
                 gapVM.setSpanSize(2);
                 gapVM.setFullSpan(true);
                 gapVM.setUseAutoAverageSpace(false);
+                gapVM.bottomDividerHieght = 20;
+                gapVM.bottomDividerRightInset = 20;
                 mAdapter.add(gapVM);
 //                lAdapter.add(gapVM);
             } else {
@@ -131,6 +133,8 @@ public class FirstFragment extends BaseFragment {
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
                     }
                 });
+                vm.bottomDividerHieght = 5;
+                vm.bottomDividerLeftInset = 5;
                 mAdapter.add(vm);
 //                lAdapter.add(vm);
             }

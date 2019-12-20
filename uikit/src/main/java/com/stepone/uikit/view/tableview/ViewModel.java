@@ -1,5 +1,6 @@
 package com.stepone.uikit.view.tableview;
 
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
 import androidx.annotation.IdRes;
@@ -16,6 +17,17 @@ import androidx.annotation.Nullable;
 abstract class ViewModel<D> implements IViewModel {
     public static final int UNSPECIFIC = -1;
     private D payload;
+
+    //divider相关
+    public int bottomDividerLeftInset;
+    public int bottomDividerRightInset;
+    public int bottomDividerHieght;
+    public int rightDividerTopInset;
+    public int rightDividerBottomInset;
+    public int rightDividerWidth;
+
+    private Drawable bottomDivider;
+    private Drawable rightDivider;
 
     /*
     * 跨度值，便于自动填充，目前只在GridLayout中起作用
@@ -44,6 +56,9 @@ abstract class ViewModel<D> implements IViewModel {
         this.payload = payload;
     }
 
+    /**
+     * span 相关
+     */
     //最小值为1
     public int getSpanSize() {
         return spanSize > 1 ? spanSize : 1;
