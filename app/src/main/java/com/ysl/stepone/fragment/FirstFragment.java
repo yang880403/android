@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.stepone.uikit.view.tableview.ClazzViewModel;
 import com.stepone.uikit.view.tableview.GridRecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.IViewModel;
-import com.stepone.uikit.view.tableview.LinearRecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.ResViewModel;
 import com.stepone.uikit.view.tableview.ViewHolder;
 import com.stepone.uikit.view.utils.DisplayUtils;
@@ -32,7 +31,6 @@ import com.ysl.stepone.R;
 public class FirstFragment extends BaseFragment {
     private RecyclerView mTableView;
     private GridRecyclerViewAdapter mAdapter;
-    private LinearRecyclerViewAdapter lAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,48 +52,11 @@ public class FirstFragment extends BaseFragment {
         mTableView = view.findViewById(R.id.tableview);
         mAdapter = new GridRecyclerViewAdapter(mTableView, 4);
 
-//        lAdapter = new LinearRecyclerViewAdapter(mTableView);
-//        mTableView.setLayoutManager(new LinearLayoutManager(getContext()));
-
 //        mAdapter.setNeedReverseLayout(true);
-//        mAdapter.setLayoutOrientation(LinearLayout.HORIZONTAL);
+//        mAdapter.setLayoutOrientation(RecyclerView.HORIZONTAL);
 
-//        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//            @Override
-//            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-//                super.getItemOffsets(outRect, view, parent, state);
-//                outRect.set(10, 0, 5, 0);
-//            }
-//        });
 
         mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, null);
-//        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 5);
-//        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                int t = position % 7;
-//                switch (t) {
-//                    case 0:
-//                    case 3:
-//                        return 1;
-//                    case 4:
-//                    case 5:
-//                        return 3;
-//                }
-//
-//                return 2;
-//            }
-//        });
-
-//        mTableView.setLayoutManager(layoutManager);
-//        mTableView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//            @Override
-//            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-//                super.getItemOffsets(outRect, view, parent, state);
-//                outRect.set(0, 5, 0, 10);
-//            }
-//        });
-//        mTableView.setAdapter(mAdapter);
 
         view.post(new Runnable() {
             @Override
@@ -119,20 +80,16 @@ public class FirstFragment extends BaseFragment {
                 gapVM.setSpanSize(2);
                 gapVM.setFullSpan(true);
                 gapVM.setUseAutoAverageSpace(false);
-                gapVM.bottomDividerHieght = DisplayUtils.dp2px(getSTActivity(), 44);
-                gapVM.bottomDividerLeftInset = 20;
-                gapVM.bottomDividerRightInset = 40;
+                gapVM.bottomDividerHieght = DisplayUtils.dp2px(getSTActivity(), 1);
                 gapVM.bottomDivider = new ColorDrawable(Color.RED);
 
-                gapVM.rightDividerWidth = 20;
-                gapVM.rightDividerTopInset = 20;
+                gapVM.rightDividerWidth = 1;
                 gapVM.rightDivider = new ColorDrawable(Color.GREEN);
                 mAdapter.add(gapVM);
-//                lAdapter.add(gapVM);
             } else {
                 TestVM vm = new TestVM(i);
-                vm.setSpanSize((i % 4));
-                vm.setSpanSize(1);
+                vm.setSpanSize(((i % 3)));
+//                vm.setSpanSize(1);
                 vm.setItemClickListener(new IViewModel.OnClickListener() {
                     @Override
                     public void onClick(View view, IViewModel viewModel) {
@@ -140,10 +97,9 @@ public class FirstFragment extends BaseFragment {
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
                     }
                 });
-//                vm.bottomDividerHieght = 5;
-//                vm.bottomDividerLeftInset = 5;
-//                mAdapter.add(vm);
-//                lAdapter.add(vm);
+                vm.bottomDividerHieght = 1;
+                vm.bottomDividerLeftInset = 1;
+                mAdapter.add(vm);
             }
         }
 

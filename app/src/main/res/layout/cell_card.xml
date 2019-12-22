@@ -6,7 +6,7 @@
     android:gravity="center"
     android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -17,8 +17,8 @@
         android:id="@+id/card_view">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="73dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:scaleType="centerInside"
             android:src="@mipmap/arrive_car"/>
         <TextView
