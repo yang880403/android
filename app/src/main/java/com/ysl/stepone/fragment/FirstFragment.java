@@ -3,6 +3,7 @@ package com.ysl.stepone.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,8 +119,14 @@ public class FirstFragment extends BaseFragment {
                 gapVM.setSpanSize(2);
                 gapVM.setFullSpan(true);
                 gapVM.setUseAutoAverageSpace(false);
-                gapVM.bottomDividerHieght = 20;
-                gapVM.bottomDividerRightInset = 20;
+                gapVM.bottomDividerHieght = DisplayUtils.dp2px(getSTActivity(), 44);
+                gapVM.bottomDividerLeftInset = 20;
+                gapVM.bottomDividerRightInset = 40;
+                gapVM.bottomDivider = new ColorDrawable(Color.RED);
+
+                gapVM.rightDividerWidth = 20;
+                gapVM.rightDividerTopInset = 20;
+                gapVM.rightDivider = new ColorDrawable(Color.GREEN);
                 mAdapter.add(gapVM);
 //                lAdapter.add(gapVM);
             } else {
@@ -133,9 +140,9 @@ public class FirstFragment extends BaseFragment {
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
                     }
                 });
-                vm.bottomDividerHieght = 5;
-                vm.bottomDividerLeftInset = 5;
-                mAdapter.add(vm);
+//                vm.bottomDividerHieght = 5;
+//                vm.bottomDividerLeftInset = 5;
+//                mAdapter.add(vm);
 //                lAdapter.add(vm);
             }
         }
@@ -178,7 +185,7 @@ public class FirstFragment extends BaseFragment {
                 super(context);
                 ViewGroup.LayoutParams params = getLayoutParams();
                 params.height = DisplayUtils.dp2px(context, 44);
-                setBackgroundColor(Color.GREEN);
+                setBackgroundColor(Color.GRAY);
             }
 
             @Override

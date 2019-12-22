@@ -26,8 +26,8 @@ abstract class ViewModel<D> implements IViewModel {
     public int rightDividerBottomInset;
     public int rightDividerWidth;
 
-    private Drawable bottomDivider;
-    private Drawable rightDivider;
+    public Drawable bottomDivider;
+    public Drawable rightDivider;
 
     /*
     * 跨度值，便于自动填充，目前只在GridLayout中起作用
