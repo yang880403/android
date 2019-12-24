@@ -57,28 +57,28 @@ public class ClazzViewModel<D> extends ViewModel<D> {
         /**
          * UI初始化方法，只会执行一次
          */
-        protected abstract void onInitialize(@NonNull VM viewModel);
+        protected abstract void onInitialize(@NonNull VM viewModel, int position);
 
         /**
          * 可在此进行view状态的重置操作
          */
-        protected abstract void onWillDisplay(@NonNull VM viewModel);
+        protected abstract void onWillDisplay(@NonNull VM viewModel, int position);
 
-        protected abstract void onDisplay(@NonNull VM viewModel);
+        protected abstract void onDisplay(@NonNull VM viewModel, int position);
 
         @Override
         @SuppressWarnings("unchecked")
-        public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel) {
+        public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel, int position) {
             mViewModel = (VM) viewModel;
-            onInitialize(mViewModel);
+            onInitialize(mViewModel, position);
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel) {
+        public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel, int position) {
             mViewModel = (VM) viewModel;
-            onWillDisplay(mViewModel);
-            onDisplay(mViewModel);
+            onWillDisplay(mViewModel, position);
+            onDisplay(mViewModel, position);
         }
     }
 }

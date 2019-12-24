@@ -15,4 +15,7 @@ public interface IViewModel {
     interface OnLongClickListener {
         boolean onLongClick(View view, IViewModel viewModel);
     }
+
+    boolean isSame(IViewModel viewModel);
+    boolean isContentSame(IViewModel viewModel);
 }

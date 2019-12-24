@@ -70,7 +70,7 @@ final class DecorView extends FrameLayout {
      * 如果layoutID无效,则根据view model中的ViewClass来装饰content view
      * 如果没有view class，则直接向用户显示 DecorView
      */
-    public void onInitialize(@NonNull ViewModel viewModel) {
+    public void onInitialize(@NonNull ViewModel viewModel, int position) {
         if (isInitialized) {
             return;
         }
@@ -85,7 +85,7 @@ final class DecorView extends FrameLayout {
 
             if (mViewModel instanceof ViewHolder.IViewDisplayer && mContentView != null) {
                 ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mViewModel;
-                displayer.onViewInitialize(mContentView, mViewModel);
+                displayer.onViewInitialize(mContentView, mViewModel, position);
 
                 //事件绑定
                 autoBindViewListener();
@@ -104,7 +104,7 @@ final class DecorView extends FrameLayout {
 
                 if (mContentView instanceof ViewHolder.IViewDisplayer) {
                     ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mContentView;
-                    displayer.onViewInitialize(mContentView, mViewModel);
+                    displayer.onViewInitialize(mContentView, mViewModel, position);
 
                     //事件绑定
                     autoBindViewListener();
@@ -121,6 +121,9 @@ final class DecorView extends FrameLayout {
     }
 
     private void prepareContentView() {
+        if (mContentView == null) {
+            return;
+        }
         LayoutParams layoutParams = (LayoutParams) mContentView.getLayoutParams();
         if (layoutParams == null) {
             return;
@@ -148,7 +151,7 @@ final class DecorView extends FrameLayout {
         mContentView.setLayoutParams(layoutParams);
     }
 
-    public void onDisplay(@NonNull ViewModel viewModel) {
+    public void onDisplay(@NonNull ViewModel viewModel, int position) {
         mViewModel = viewModel;
 
         if (mContentView != null) {
@@ -162,7 +165,7 @@ final class DecorView extends FrameLayout {
 
             if (displayer != null) {
                 prepareContentView();
-                displayer.onViewDisplay(mContentView, mViewModel);
+                displayer.onViewDisplay(mContentView, mViewModel, position);
             }
         }
     }

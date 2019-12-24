@@ -85,7 +85,7 @@ public class FirstFragment extends BaseFragment {
 
                 gapVM.rightDividerWidth = 1;
                 gapVM.rightDivider = new ColorDrawable(Color.GREEN);
-                mAdapter.add(gapVM);
+                mAdapter.append(gapVM);
             } else {
                 TestVM vm = new TestVM(i);
                 vm.setSpanSize(((i % 3)));
@@ -99,11 +99,9 @@ public class FirstFragment extends BaseFragment {
                 });
                 vm.bottomDividerHieght = 1;
                 vm.bottomDividerLeftInset = 1;
-                mAdapter.add(vm);
+                mAdapter.append(vm);
             }
         }
-
-        mAdapter.notifyDataSetChanged();
     }
 
 
@@ -114,17 +112,17 @@ public class FirstFragment extends BaseFragment {
         }
 
         @Override
-        protected void onInitializeView(@NonNull ViewHolder holder) {
+        protected void onInitializeView(@NonNull ViewHolder holder, int position) {
 
         }
 
         @Override
-        protected void onWillDisplayView(@NonNull ViewHolder holder) {
+        protected void onWillDisplayView(@NonNull ViewHolder holder, int position) {
 
         }
 
         @Override
-        protected void onDisplayView(@NonNull ViewHolder holder) {
+        protected void onDisplayView(@NonNull ViewHolder holder, int position) {
             holder.setText(R.id.title_view, getPayload()+"");
         }
     }
@@ -145,17 +143,17 @@ public class FirstFragment extends BaseFragment {
             }
 
             @Override
-            protected void onInitialize(@NonNull GapVM viewModel) {
+            protected void onInitialize(@NonNull GapVM viewModel, int pisition) {
 
             }
 
             @Override
-            protected void onWillDisplay(@NonNull GapVM viewModel) {
+            protected void onWillDisplay(@NonNull GapVM viewModel, int position) {
 
             }
 
             @Override
-            protected void onDisplay(@NonNull GapVM viewModel) {
+            protected void onDisplay(@NonNull GapVM viewModel, int position) {
 
             }
 

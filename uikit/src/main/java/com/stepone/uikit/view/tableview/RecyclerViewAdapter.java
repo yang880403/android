@@ -1,14 +1,20 @@
 package com.stepone.uikit.view.tableview;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.AsyncListDiffer;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * FileName: RecyclerViewAdapter
@@ -26,27 +32,45 @@ import java.util.List;
 public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     private static final String TAG = "RecyclerViewAdapter";
 
-    private List<ViewModel> mViewModels = new ArrayList<>();
+    private final List<ViewModel> mViewModels;
+    private final AsyncListDiffer<ViewModel> mDiffer;
+    private final DiffUtil.ItemCallback<ViewModel> mItemCallback;
     private RecyclerView mRecyclerView;
     private @RecyclerView.Orientation int mLayoutOrientation;
     private boolean mNeedReverseLayout;
+    private boolean isUpdating = false;//批量更新数据源，避免每次都进行更新操作
 
     public RecyclerViewAdapter(@NonNull RecyclerView recyclerView) {
         this(recyclerView, null);
     }
 
     public RecyclerViewAdapter(@NonNull RecyclerView recyclerView, List<ViewModel> viewModels) {
-        mRecyclerView = recyclerView;
-        mRecyclerView.setAdapter(this);
-        if (viewModels != null) {
-            mViewModels.addAll(viewModels);
-        }
+        mItemCallback = new DiffUtil.ItemCallback<ViewModel>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull ViewModel oldItem, @NonNull ViewModel newItem) {
+                return false;
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull ViewModel oldItem, @NonNull ViewModel newItem) {
+                return false;
+            }
+        };
+        mDiffer = new AsyncListDiffer<>(this, mItemCallback);
+        mViewModels = new ArrayList<>();
 
         //默认布局方向
         mLayoutOrientation = LinearLayout.VERTICAL;
         mNeedReverseLayout = false;
 
+        mRecyclerView = recyclerView;
         bindLayoutManager();
+        mRecyclerView.setAdapter(this);
+
+        if (viewModels != null) {
+            mViewModels.addAll(viewModels);
+            mDiffer.submitList(mViewModels);
+        }
     }
 
     public RecyclerView getRecyclerView() {
@@ -94,38 +118,140 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
 
     /**
-     * 修改数据源
+     * 修改数据源，非线程安全，务必保证在主线程进行操作
      */
-    public void add(ViewModel model) {
-        if (model != null) {
-            mViewModels.add(model);
+    public void beginUpdate() {
+        isUpdating = true;
+    }
+
+    public void endUpdate() {
+        if (isUpdating) {
+            isUpdating = false;
+            notifyDataSetChanged();
         }
     }
 
-    public void add(List<ViewModel> models) {
+    public void reload() {
+        isUpdating = false;
+        notifyDataSetChanged();
+    }
+
+    public void reset(List<ViewModel> models) {
+        isUpdating = false;
+        mViewModels.clear();
+
         if (models != null) {
             mViewModels.addAll(models);
         }
+
+        notifyDataSetChanged();
     }
 
-    public void remove(ViewModel model) {
+    public void append(ViewModel model) {
         if (model != null) {
-            mViewModels.remove(model);
+            insert(mViewModels.size(), model);
         }
     }
 
-    public void remove(int index) {
-        mViewModels.remove(index);
+    public void append(List<ViewModel> models) {
+        if (models != null && models.size() > 0) {
+            insert(mViewModels.size(), models);
+        }
     }
 
-    public void remove(List<ViewModel> models) {
-        if (models != null) {
-            mViewModels.removeAll(models);
+    public void insert(int position, ViewModel model) {
+        if (model != null) {
+            mViewModels.add(position, model);
+            if (!isUpdating) {
+                notifyItemInserted(position);
+            }
+        }
+    }
+
+    public void insert(int fromPosition, List<ViewModel> models) {
+        if (models != null && models.size() > 0) {
+            mViewModels.addAll(fromPosition, models);
+            if (!isUpdating) {
+                notifyItemRangeInserted(fromPosition, models.size());
+            }
+        }
+    }
+
+
+    public void remove(ViewModel model) {
+        if (model != null) {
+            int index = mViewModels.indexOf(model);
+            remove(index);
+        }
+    }
+
+    public void remove(int positon) {
+        mViewModels.remove(positon);
+        if (!isUpdating) {
+            notifyItemRemoved(positon);
+        }
+    }
+
+    public void remove(int fromPositon, int count) {
+        for (int i = 0; i < count; i++) {
+            mViewModels.remove(fromPositon+i);
+        }
+        if (!isUpdating) {
+            notifyItemRangeRemoved(fromPositon, count);
+        }
+    }
+
+    public void update(int positon, Object payload) {
+        if (!isUpdating) {
+            notifyItemChanged(positon, payload);
+        }
+    }
+
+    public void update(int fromPositon, int count, Object payload) {
+        if (!isUpdating) {
+            notifyItemRangeChanged(fromPositon, count, payload);
         }
     }
 
     public void clear() {
         mViewModels.clear();
+        notifyDataSetChanged();
+    }
+
+
+    private class AsyncDiffer {
+        private List<ViewModel> mList;
+        private Executor mDifferExecutor = Executors.newFixedThreadPool(2);
+        private Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+        void asyncUpdate() {
+            mDifferExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                        @Override
+                        public int getOldListSize() {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getNewListSize() {
+                            return 0;
+                        }
+
+                        @Override
+                        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                            return false;
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Nullable
@@ -157,8 +283,8 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         DecorView decorView = (DecorView) holder.itemView;
         ViewModel viewModel = mViewModels.get(position);
 
-        decorView.onInitialize(viewModel);
-        decorView.onDisplay(viewModel);
+        decorView.onInitialize(viewModel, position);
+        decorView.onDisplay(viewModel, position);
     }
 
     @Override

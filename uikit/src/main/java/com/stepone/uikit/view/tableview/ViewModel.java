@@ -173,4 +173,14 @@ abstract class ViewModel<D> implements IViewModel {
 
     @LayoutRes
     abstract int getLayoutResource();
+
+    @Override
+    public boolean isSame(IViewModel viewModel) {
+        return false;
+    }
+
+    @Override
+    public boolean isContentSame(IViewModel viewModel) {
+        return false;
+    }
 }

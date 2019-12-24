@@ -28,12 +28,12 @@ public class ViewHolder {
         /**
          * 可在此处进行UI初始化及事件绑定等操作，每个view只会执行一次，复用时将不再执行
          */
-        void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel);
+        void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel, int position);
 
         /**
          * UI展示
          */
-        void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel);
+        void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel, int position);
     }
 
     static class Factory {
