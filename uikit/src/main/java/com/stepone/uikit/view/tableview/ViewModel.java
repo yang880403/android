@@ -176,11 +176,11 @@ abstract class ViewModel<D> implements IViewModel {
 
     @Override
     public boolean isSame(IViewModel viewModel) {
-        return false;
+        return equals(viewModel);
     }
 
     @Override
     public boolean isContentSame(IViewModel viewModel) {
-        return false;
+        return hashCode() == viewModel.hashCode();
     }
 }

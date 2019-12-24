@@ -22,6 +22,9 @@ import com.stepone.uikit.view.tableview.ViewHolder;
 import com.stepone.uikit.view.utils.DisplayUtils;
 import com.ysl.stepone.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * FileName: FirstFragment
  * Author: y.liang
@@ -95,6 +98,7 @@ public class FirstFragment extends BaseFragment {
                     public void onClick(View view, IViewModel viewModel) {
                         TestVM testVM = (TestVM) viewModel;
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
+                        buildData();
                     }
                 });
                 vm.bottomDividerHieght = 1;
@@ -102,6 +106,29 @@ public class FirstFragment extends BaseFragment {
                 mAdapter.append(vm);
             }
         }
+    }
+
+    private void buildData() {
+        List<TestVM> list = new ArrayList<>();
+        for (int i = 0; i < 11; i++) {
+            TestVM vm = new TestVM(i);
+            vm.setSpanSize((2));
+            vm.setItemClickListener(new IViewModel.OnClickListener() {
+                @Override
+                public void onClick(View view, IViewModel viewModel) {
+                    TestVM testVM = (TestVM) viewModel;
+                    Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
+//                    buildDatasource();
+                    mAdapter.remove(viewModel);
+                }
+
+            });
+            vm.bottomDividerHieght = 1;
+            vm.bottomDividerLeftInset = 1;
+            list.add(vm);
+        }
+
+        mAdapter.reset(list);
     }
 
 
