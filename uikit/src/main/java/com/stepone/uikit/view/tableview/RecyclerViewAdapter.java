@@ -42,7 +42,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         this(recyclerView, null);
     }
 
-    public RecyclerViewAdapter(@NonNull RecyclerView recyclerView, List<ViewModel> viewModels) {
+    public RecyclerViewAdapter(@NonNull RecyclerView recyclerView, List<? extends ViewModel> viewModels) {
         mDiffer = new AsyncDiffer();
         mViewModels = new ArrayList<>();
 
@@ -107,7 +107,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     /**
      * 修改数据源，非线程安全，务必保证在主线程进行操作
      */
-    private void diffUpdate(List<ViewModel> oldList, List<ViewModel> newList) {
+    private void diffUpdate(List<? extends ViewModel> oldList, List<? extends ViewModel> newList) {
         isUpdating = true;
         mDiffer.doDiff(oldList, newList);
     }
@@ -121,8 +121,8 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void reset(List<? extends ViewModel> models) {
-        List<ViewModel> oldList = null;
+    public void setData(List<? extends ViewModel> models) {
+        List<? extends ViewModel> oldList = null;
         if (mViewModels.size() > 0) {
             oldList = new ArrayList<>(mViewModels);
         }
@@ -145,7 +145,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void append(List<ViewModel> models) {
+    public void append(List<? extends ViewModel> models) {
         if (models != null && models.size() > 0) {
             insert(mViewModels.size(), models);
         }
@@ -161,7 +161,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void insert(int fromPosition, List<ViewModel> models) {
+    public void insert(int fromPosition, List<? extends ViewModel> models) {
         if (isUpdating) {
             return;
         }
@@ -172,7 +172,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
 
-    public void remove(IViewModel model) {
+    public void remove(ViewModel model) {
         if (model != null) {
             int index = mViewModels.indexOf(model);
             remove(index);
@@ -216,15 +216,15 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
 
 
     private class AsyncDiffer {
-        private List<ViewModel> mOldList;
+        private List<? extends ViewModel> mOldList;
         private Executor mDifferExecutor = Executors.newFixedThreadPool(2);
         private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
-        void doDiff(List<ViewModel> oldList, List<ViewModel> newList) {
+        void doDiff(List<? extends ViewModel> oldList, List<? extends ViewModel> newList) {
             mOldList = oldList;
             doDiff(newList);
         }
-        void doDiff(final List<ViewModel> newList) {
+        void doDiff(final List<? extends ViewModel> newList) {
             mDifferExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -272,7 +272,7 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
             });
         }
 
-        void onDiffResult(DiffUtil.DiffResult result, List<ViewModel> newList) {
+        void onDiffResult(DiffUtil.DiffResult result, List<? extends ViewModel> newList) {
             mOldList = newList;
             RecyclerViewAdapter.this.onDiffResult(result);
         }

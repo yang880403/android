@@ -2,6 +2,7 @@ package com.stepone.uikit.view.tableview;
 
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
+import android.view.View;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
@@ -14,7 +15,7 @@ import androidx.annotation.Nullable;
  * Date: 2019-12-13 17:45
  */
 
-abstract class ViewModel<D> implements IViewModel {
+public abstract class ViewModel<D> {
     public static final int UNSPECIFIC = -1;
     private D payload;
 
@@ -174,13 +175,19 @@ abstract class ViewModel<D> implements IViewModel {
     @LayoutRes
     abstract int getLayoutResource();
 
-    @Override
-    public boolean isSame(IViewModel viewModel) {
+    public boolean isSame(ViewModel viewModel) {
         return equals(viewModel);
     }
 
-    @Override
-    public boolean isContentSame(IViewModel viewModel) {
+    public boolean isContentSame(ViewModel viewModel) {
         return hashCode() == viewModel.hashCode();
+    }
+
+    public interface OnClickListener {
+        void onClick(View view, ViewModel viewModel, int position);
+    }
+
+    public interface OnLongClickListener {
+        boolean onLongClick(View view, ViewModel viewModel, int position);
     }
 }

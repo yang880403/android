@@ -34,6 +34,7 @@ final class DecorView extends FrameLayout {
     private final static String TAG = "DecorView";
 
     private ViewModel mViewModel;
+    private int mPosition;
     private boolean isInitialized = false;
 
     private Rect mObtainRect = new Rect();
@@ -77,6 +78,7 @@ final class DecorView extends FrameLayout {
 
         isInitialized = true;
         mViewModel = viewModel;
+        mPosition = position;
 
         int layoutResource = mViewModel.getLayoutResource();
         if (layoutResource > 0) {
@@ -85,7 +87,7 @@ final class DecorView extends FrameLayout {
 
             if (mViewModel instanceof ViewHolder.IViewDisplayer && mContentView != null) {
                 ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mViewModel;
-                displayer.onViewInitialize(mContentView, mViewModel, position);
+                displayer.onViewInitialize(mContentView, mViewModel, mPosition);
 
                 //事件绑定
                 autoBindViewListener();
@@ -104,7 +106,7 @@ final class DecorView extends FrameLayout {
 
                 if (mContentView instanceof ViewHolder.IViewDisplayer) {
                     ViewHolder.IViewDisplayer displayer = (ViewHolder.IViewDisplayer) mContentView;
-                    displayer.onViewInitialize(mContentView, mViewModel, position);
+                    displayer.onViewInitialize(mContentView, mViewModel, mPosition);
 
                     //事件绑定
                     autoBindViewListener();
@@ -153,6 +155,7 @@ final class DecorView extends FrameLayout {
 
     public void onDisplay(@NonNull ViewModel viewModel, int position) {
         mViewModel = viewModel;
+        mPosition = position;
 
         if (mContentView != null) {
             ViewHolder.IViewDisplayer displayer = null;
@@ -165,7 +168,7 @@ final class DecorView extends FrameLayout {
 
             if (displayer != null) {
                 prepareContentView();
-                displayer.onViewDisplay(mContentView, mViewModel, position);
+                displayer.onViewDisplay(mContentView, mViewModel, mPosition);
             }
         }
     }
@@ -210,7 +213,7 @@ final class DecorView extends FrameLayout {
         public void onClick(View v) {
             ViewModel.OnClickListener click = mViewModel.getItemClickListener();
             if (click != null) {
-                click.onClick(v, mViewModel);
+                click.onClick(v, mViewModel, mPosition);
             }
         }
     };
@@ -222,7 +225,7 @@ final class DecorView extends FrameLayout {
             if (longClick == null) {
                 return false;
             }
-            return longClick.onLongClick(v, mViewModel);
+            return longClick.onLongClick(v, mViewModel, mPosition);
         }
     };
 
@@ -233,7 +236,7 @@ final class DecorView extends FrameLayout {
             SparseArray<ViewModel.OnClickListener> clicks = mViewModel.getClickListeners();
             ViewModel.OnClickListener click = clicks.get(v.getId());
             if (click != null) {
-                click.onClick(v, mViewModel);
+                click.onClick(v, mViewModel, mPosition);
             }
         }
     };
@@ -245,7 +248,7 @@ final class DecorView extends FrameLayout {
             SparseArray<ViewModel.OnLongClickListener> longClicks = mViewModel.getLongClickListeners();
             ViewModel.OnLongClickListener longClick = longClicks.get(v.getId());
             if (longClick != null) {
-                return longClick.onLongClick(v, mViewModel);
+                return longClick.onLongClick(v, mViewModel, mPosition);
             }
             return false;
         }

@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.stepone.uikit.view.tableview.ClazzViewModel;
 import com.stepone.uikit.view.tableview.GridRecyclerViewAdapter;
-import com.stepone.uikit.view.tableview.IViewModel;
 import com.stepone.uikit.view.tableview.ResViewModel;
 import com.stepone.uikit.view.tableview.ViewHolder;
+import com.stepone.uikit.view.tableview.ViewModel;
 import com.stepone.uikit.view.utils.DisplayUtils;
 import com.ysl.stepone.R;
 
@@ -93,9 +93,9 @@ public class FirstFragment extends BaseFragment {
                 TestVM vm = new TestVM(i);
                 vm.setSpanSize(((i % 3)));
 //                vm.setSpanSize(1);
-                vm.setItemClickListener(new IViewModel.OnClickListener() {
+                vm.setItemClickListener(new ViewModel.OnClickListener() {
                     @Override
-                    public void onClick(View view, IViewModel viewModel) {
+                    public void onClick(View view, ViewModel viewModel, int position) {
                         TestVM testVM = (TestVM) viewModel;
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
                         buildData();
@@ -113,9 +113,9 @@ public class FirstFragment extends BaseFragment {
         for (int i = 0; i < 11; i++) {
             TestVM vm = new TestVM(i);
             vm.setSpanSize((2));
-            vm.setItemClickListener(new IViewModel.OnClickListener() {
+            vm.setItemClickListener(new ViewModel.OnClickListener() {
                 @Override
-                public void onClick(View view, IViewModel viewModel) {
+                public void onClick(View view, ViewModel viewModel, int position) {
                     TestVM testVM = (TestVM) viewModel;
                     Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
 //                    buildDatasource();
@@ -128,7 +128,7 @@ public class FirstFragment extends BaseFragment {
             list.add(vm);
         }
 
-        mAdapter.reset(list);
+        mAdapter.setData(list);
     }
 
 
