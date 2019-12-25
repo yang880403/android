@@ -64,7 +64,7 @@ public class FirstFragment extends BaseFragment {
         view.post(new Runnable() {
             @Override
             public void run() {
-                buildDatasource();
+                buildData();
             }
         });
 
@@ -110,9 +110,9 @@ public class FirstFragment extends BaseFragment {
 
     private void buildData() {
         List<TestVM> list = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 9; i++) {
             TestVM vm = new TestVM(i);
-            vm.setSpanSize((2));
+            vm.setSpanSize((1));
             vm.setItemClickListener(new ViewModel.OnClickListener() {
                 @Override
                 public void onClick(View view, ViewModel viewModel, int position) {

@@ -183,6 +183,10 @@ public abstract class RecyclerViewAdapter extends RecyclerView.Adapter {
         if (isUpdating) {
             return;
         }
+        ViewModel next = getViewModel(positon + 1);
+        if (next != null) {
+            next.notifyPositionChanged();
+        }
         mViewModels.remove(positon);
         notifyItemRemoved(positon);
     }

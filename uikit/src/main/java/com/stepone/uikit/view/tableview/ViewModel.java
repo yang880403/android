@@ -38,9 +38,12 @@ public abstract class ViewModel<D> {
     private int maxSpanSize = UNSPECIFIC;
     private boolean isFullSpan = false;//占据整行，如果剩余span小于整行，则换行
     private boolean useAutoAverageSpace = true;//是否使用自动均分行间距功能
+
+    //UI的位置发生变化后，需要重新计算，特别是网格类布局
     int layoutSpanSize;//UI布局时，实际采用的spanSize，对用户只读，用户可据此进行UI适配
     int spanIndex = UNSPECIFIC; //缓存spanIndex
     int spanGroupIndex = UNSPECIFIC; //缓存spanGroupIndex
+    private boolean isPositionChanged = false;
 
     /*设置事件监听器*/
     private OnClickListener itemClickListener;
@@ -110,9 +113,22 @@ public abstract class ViewModel<D> {
         return useAutoAverageSpace;
     }
 
-    void clearSpanIndexCache() {
+    private void clearSpanIndexCache() {
         spanGroupIndex = UNSPECIFIC;
         spanIndex = UNSPECIFIC;
+    }
+
+    void notifyPositionChanged() {
+        isPositionChanged = true;
+        clearSpanIndexCache();
+    }
+
+    void fixPosition() {
+        isPositionChanged = false;
+    }
+
+    boolean isPositionChanged() {
+        return isPositionChanged;
     }
 
     public void setSpanSize(int size) {

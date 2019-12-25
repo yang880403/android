@@ -55,6 +55,13 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                         return 0;
                     }
 
+                    if (viewModel.isPositionChanged()) {//传递UI的位置改变
+                        ViewModel next = getViewModel(position+1);
+                        if (next != null) {
+                            next.notifyPositionChanged();
+                        }
+                    }
+
                     int remaining = mSpanCount;
                     int spanIndex = 0;
                     int spanGroupIndex = 0;
@@ -72,10 +79,12 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                     }
 
                     //优化处理:如果viewmodel的span信息已经被提前计算好，则直接返回
-                    if (viewModel.spanIndex != ViewModel.UNSPECIFIC &&
+                    if (!viewModel.isPositionChanged() &&
+                            viewModel.spanIndex != ViewModel.UNSPECIFIC &&
                             viewModel.spanGroupIndex != ViewModel.UNSPECIFIC &&
                             viewModel.layoutSpanSize > 0 &&
                             viewModel.layoutSpanSize <= remaining) {
+                        viewModel.fixPosition();//修复位置
                         return viewModel.layoutSpanSize;
                     }
 
@@ -129,7 +138,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                                 if (canZoomIn) {
                                     size = Math.min(maxSize, remaining);
                                 }
-                                nextVM.clearSpanIndexCache();
+                                nextVM.spanGroupIndex = ViewModel.UNSPECIFIC;
                             } else if (minSize + nextMinSize == remaining) {//可以完整填充，提前计算nextVM的span
                                 size = minSize;
                                 nextVM.layoutSpanSize = nextMinSize;
@@ -148,7 +157,16 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                             }
 
                             if (nextVM.spanGroupIndex != ViewModel.UNSPECIFIC) {
-                                nextVM.spanGroupIndex = spanIndex + size;
+                                nextVM.spanIndex = spanIndex + size;
+
+                                if (nextVM.isPositionChanged()) {//传递位置改变
+                                    ViewModel byNext = getViewModel(position+2);
+                                    if (byNext != null) {
+                                        byNext.notifyPositionChanged();
+                                    }
+                                }
+
+                                nextVM.fixPosition();//修复位置
                             }
                         }
                     }
@@ -156,6 +174,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                     viewModel.spanIndex = spanIndex;
                     viewModel.spanGroupIndex = spanGroupIndex;
                     viewModel.layoutSpanSize = size;
+                    viewModel.fixPosition();
                     return viewModel.layoutSpanSize;
                 }
             };
@@ -200,7 +219,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
         @Override
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             int layoutOrientation = getRecyclerViewLayoutOrientation();
-            int iPos = parent.getChildLayoutPosition(view);
+            int iPos = parent.getChildAdapterPosition(view);
             ViewModel viewModel = getViewModel(iPos);
             if (viewModel == null || viewModel.layoutSpanSize <= 0
                     || !viewModel.useAutoAverageSpace()
@@ -208,8 +227,13 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                 return;
             }
 
-            final int spanIndex = viewModel.getSpanIndex()+1;//从1开始，便于计算
-            final int spanSize = viewModel.getLayoutSpanSize();
+            //UI局部更新时候，需要主动调用SpanSizeLookup去刷新位置缓存
+            if (viewModel.spanIndex == ViewModel.UNSPECIFIC) {
+                mLayoutManager.getSpanSizeLookup().getSpanSize(iPos);
+            }
+
+            final int spanIndex = viewModel.spanIndex+1;//从1开始，便于计算
+            final int spanSize = viewModel.layoutSpanSize;
 
             int Li;
             int Ri;
@@ -262,7 +286,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
                     View child = parent.getChildAt(i);
                     Rect outRect = obtainRect();
                     parent.getDecoratedBoundsWithMargins(child, outRect);
-                    spaceDrawable.setBounds(rect);
+                    spaceDrawable.setBounds(outRect);
                     spaceDrawable.draw(c);
                 }
             }
