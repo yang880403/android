@@ -200,10 +200,10 @@ public abstract class ViewModel<D> {
     }
 
     public interface OnClickListener {
-        void onClick(View view, ViewModel viewModel, int position);
+        void onClick(View view, ViewModel viewModel);
     }
 
     public interface OnLongClickListener {
-        boolean onLongClick(View view, ViewModel viewModel, int position);
+        boolean onLongClick(View view, ViewModel viewModel);
     }
 }

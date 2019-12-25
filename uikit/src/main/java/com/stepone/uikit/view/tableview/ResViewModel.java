@@ -40,26 +40,26 @@ public abstract class ResViewModel<D, VH extends ViewHolder> extends ViewModel<D
         return (VH) new ViewHolder(view);
     }
 
-    protected abstract void onInitializeView(@NonNull VH holder, int position);
-    protected abstract void onWillDisplayView(@NonNull VH holder, int position);
-    protected abstract void onDisplayView(@NonNull VH holder, int position);
+    protected abstract void onInitializeView(@NonNull VH holder);
+    protected abstract void onWillDisplayView(@NonNull VH holder);
+    protected abstract void onDisplayView(@NonNull VH holder);
 
     @Override
-    public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel, int position) {
+    public final void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel) {
         VH viewHolder = onCreateViewHolder(view);
         ViewHolder.Factory.put(view, viewHolder);
-        onInitializeView(viewHolder, position);
+        onInitializeView(viewHolder);
     }
 
     @Override
-    public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel, int position) {
+    public final void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel) {
         @SuppressWarnings("unchecked")
         VH viewHolder = (VH) ViewHolder.Factory.get(view);
         if (viewHolder == null) {
             throw new NullPointerException("view holder is null");
         }
 
-        onWillDisplayView(viewHolder, position);
-        onDisplayView(viewHolder, position);
+        onWillDisplayView(viewHolder);
+        onDisplayView(viewHolder);
     }
 }

@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import java.util.WeakHashMap;
@@ -28,12 +27,12 @@ public class ViewHolder {
         /**
          * 可在此处进行UI初始化及事件绑定等操作，每个view只会执行一次，复用时将不再执行
          */
-        void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel, int position);
+        void onViewInitialize(@NonNull View view, @NonNull ViewModel viewModel);
 
         /**
          * UI展示
          */
-        void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel, int position);
+        void onViewDisplay(@NonNull View view, @NonNull ViewModel viewModel);
     }
 
     static class Factory {

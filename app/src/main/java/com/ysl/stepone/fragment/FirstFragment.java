@@ -95,7 +95,7 @@ public class FirstFragment extends BaseFragment {
 //                vm.setSpanSize(1);
                 vm.setItemClickListener(new ViewModel.OnClickListener() {
                     @Override
-                    public void onClick(View view, ViewModel viewModel, int position) {
+                    public void onClick(View view, ViewModel viewModel) {
                         TestVM testVM = (TestVM) viewModel;
                         Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
                         buildData();
@@ -115,7 +115,7 @@ public class FirstFragment extends BaseFragment {
             vm.setSpanSize((1));
             vm.setItemClickListener(new ViewModel.OnClickListener() {
                 @Override
-                public void onClick(View view, ViewModel viewModel, int position) {
+                public void onClick(View view, ViewModel viewModel) {
                     TestVM testVM = (TestVM) viewModel;
                     Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
 //                    buildDatasource();
@@ -139,17 +139,17 @@ public class FirstFragment extends BaseFragment {
         }
 
         @Override
-        protected void onInitializeView(@NonNull ViewHolder holder, int position) {
+        protected void onInitializeView(@NonNull ViewHolder holder) {
 
         }
 
         @Override
-        protected void onWillDisplayView(@NonNull ViewHolder holder, int position) {
+        protected void onWillDisplayView(@NonNull ViewHolder holder) {
 
         }
 
         @Override
-        protected void onDisplayView(@NonNull ViewHolder holder, int position) {
+        protected void onDisplayView(@NonNull ViewHolder holder) {
             holder.setText(R.id.title_view, getPayload()+"");
         }
     }
@@ -170,17 +170,17 @@ public class FirstFragment extends BaseFragment {
             }
 
             @Override
-            protected void onInitialize(@NonNull GapVM viewModel, int pisition) {
+            protected void onInitialize(@NonNull GapVM viewModel) {
 
             }
 
             @Override
-            protected void onWillDisplay(@NonNull GapVM viewModel, int position) {
+            protected void onWillDisplay(@NonNull GapVM viewModel) {
 
             }
 
             @Override
-            protected void onDisplay(@NonNull GapVM viewModel, int position) {
+            protected void onDisplay(@NonNull GapVM viewModel) {
 
             }
 
