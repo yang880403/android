@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,11 @@ public class FirstFragment extends BaseFragment {
     private RecyclerView mTableView;
     private GridRecyclerViewAdapter mAdapter;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.i("TT", getActivity().toString());
     }
 
     @Override
@@ -59,7 +61,7 @@ public class FirstFragment extends BaseFragment {
 //        mAdapter.setLayoutOrientation(RecyclerView.HORIZONTAL);
 
 
-        mAdapter.setAverageRowItemSpace(20, GridRecyclerViewAdapter.AVERAGER_SPACE_STRATEGY_ALL, null);
+        mAdapter.setItemSpaceInRow(20, GridRecyclerViewAdapter.SPACE_STRATEGY_ALL, null);
 
         view.post(new Runnable() {
             @Override

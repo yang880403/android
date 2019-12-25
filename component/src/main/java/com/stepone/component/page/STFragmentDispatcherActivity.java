@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
 import com.stepone.navigator.INavigatorPage;
 import com.stepone.navigator.NavigatorStack;
 import com.stepone.navigator.RouterMap;
@@ -21,6 +20,8 @@ import java.util.Set;
  */
 
 public abstract class STFragmentDispatcherActivity extends STActivity implements INavigatorPage {
+    private final static String K_CONTENT_FRAGMENT = "K_CONTENT_FRAGMENT";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +32,14 @@ public abstract class STFragmentDispatcherActivity extends STActivity implements
         int routerId = intent.getIntExtra(RouterMap.MetaRouter.KEY_ROUTER_ID_INT, 0);
         NavigatorStack.onPageCreate(routerId, this);
 
-        //APP启动分发
-        if (Intent.ACTION_MAIN.equals(action) && categorys != null && categorys.contains(Intent.CATEGORY_LAUNCHER)) {
-            setContentFragment(onDispatchLauncherFragment());
-        } else {//普通分发
-            setContentFragment(onDispatchNormalFragment());
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(K_CONTENT_FRAGMENT);
+        if (fragment == null) {
+            //APP启动分发
+            if (Intent.ACTION_MAIN.equals(action) && categorys != null && categorys.contains(Intent.CATEGORY_LAUNCHER)) {
+                setContentFragment(onDispatchLauncherFragment(), K_CONTENT_FRAGMENT);
+            } else {//普通分发
+                setContentFragment(onDispatchNormalFragment(), K_CONTENT_FRAGMENT);
+            }
         }
     }
 
@@ -55,7 +59,9 @@ public abstract class STFragmentDispatcherActivity extends STActivity implements
         return isFinishing() || isDestroyed();
     }
 
+    //分发启动页面
     abstract protected Fragment onDispatchLauncherFragment();
 
+    //分发普通页面
     abstract protected Fragment onDispatchNormalFragment();
 }

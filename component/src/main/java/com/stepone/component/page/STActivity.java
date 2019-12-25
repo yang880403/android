@@ -71,11 +71,11 @@ public class STActivity extends AppCompatActivity {
         }
     }
 
-    void setContentFragment(Fragment fragment) {
+    void setContentFragment(Fragment fragment, String tag) {
         if (fragment != null && mContentParent != null) {
             mContentParent.removeAllViews();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.st_component_abs_content, fragment)
+                    .add(R.id.st_component_abs_content, fragment, tag)
                     .commit();
         }
     }

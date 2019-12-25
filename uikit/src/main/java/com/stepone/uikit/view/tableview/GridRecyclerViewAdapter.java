@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.stepone.uikit.view.utils.DisplayUtils;
-
 import java.util.List;
 
 /**
@@ -23,7 +21,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
     private static final String TAG = "GridRecyclerViewAdapter";
     private int mSpanCount;
     private GridLayoutManager mLayoutManager;
-    private AverageRowItemSpaceDecoration mItemSpaceDecoration;
+    private ItemSpaceInRowDecoration mItemSpaceDecoration;
 
     public GridRecyclerViewAdapter(@NonNull RecyclerView recyclerView, int spanCount) {
         super(recyclerView);
@@ -194,25 +192,25 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
         rebindLayoutManager();
     }
 
-    public static final int AVERAGER_SPACE_STRATEGY_ALL = 0;
-    public static final int AVERAGER_SPACE_STRATEGY_CENTER = 1;//两边间距为0，中间间距均分
+    public static final int SPACE_STRATEGY_ALL = 0;
+    public static final int SPACE_STRATEGY_CENTER = 1;//两边间距为0，中间间距均分
 
     /**
      * 根据spanCount及targetSpace，自动计算每个item的左右缩进，确保各个item之间的间距相等
      *
      * 每个spanIndex处，item的左右缩进是确定值
      * AVERAGER_ALL模式下的计算公式
-     * Li = averageSpace*(spanCount+1-i)/spanCount
-     * Ri = averageSpace*(i/spanCount)
+     * Li = itemSpace*(spanCount+1-i)/spanCount
+     * Ri = itemSpace*(i/spanCount)
      *
      * AVERAGER_CENTER模式下的计算公式
-     * Li = averageSpace*(i-1)/spanCount
-     * Ri = averageSpace*(spanCount-i)/spanCount
+     * Li = itemSpace*(i-1)/spanCount
+     * Ri = itemSpace*(spanCount-i)/spanCount
      */
-    public class AverageRowItemSpaceDecoration extends RecyclerView.ItemDecoration {
+    private class ItemSpaceInRowDecoration extends RecyclerView.ItemDecoration {
         //间距单位均为px
-        private int averageSpace;
-        private int averageStrategy;
+        private int itemSpace;
+        private int spaceStrategy;
         private Drawable spaceDrawable;
         private Rect rect;
 
@@ -223,7 +221,7 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
             ViewModel viewModel = getViewModel(iPos);
             if (viewModel == null || viewModel.layoutSpanSize <= 0
                     || !viewModel.useAutoAverageSpace()
-                    || (viewModel.layoutSpanSize >= mSpanCount && averageStrategy == AVERAGER_SPACE_STRATEGY_CENTER)) {
+                    || (viewModel.layoutSpanSize >= mSpanCount && spaceStrategy == SPACE_STRATEGY_CENTER)) {
                 return;
             }
 
@@ -239,12 +237,12 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
             int Ri;
 
             //默认为AVERAGER_SPACE_STRATEGY_CENTER
-            if (averageStrategy == AVERAGER_SPACE_STRATEGY_ALL) {
-                Li = Math.round(averageSpace * (mSpanCount+1-spanIndex) * 1.0f / mSpanCount);
-                Ri = Math.round(averageSpace * ((spanIndex+spanSize-1)*1.0f/mSpanCount));
+            if (spaceStrategy == SPACE_STRATEGY_ALL) {
+                Li = Math.round(itemSpace * (mSpanCount+1-spanIndex) * 1.0f / mSpanCount);
+                Ri = Math.round(itemSpace * ((spanIndex+spanSize-1)*1.0f/mSpanCount));
             } else {
-                Li = Math.round(averageSpace * (spanIndex-1) * 1.0f / mSpanCount);
-                Ri = Math.round(averageSpace * (mSpanCount - spanIndex) * 1.0f / mSpanCount);
+                Li = Math.round(itemSpace * (spanIndex-1) * 1.0f / mSpanCount);
+                Ri = Math.round(itemSpace * (mSpanCount - spanIndex) * 1.0f / mSpanCount);
             }
 
             if (layoutOrientation == RecyclerView.VERTICAL) {
@@ -294,20 +292,20 @@ public class GridRecyclerViewAdapter extends LinearRecyclerViewAdapter {
     }
 
     /**
-     * 设置item的间距，单位为dp
+     * 设置item的间距，单位为px
      *
      * @param space item间距
-     * @param strategy 均分策略 AVERAGER_SPACE_STRATEGY_ALL、AVERAGER_SPACE_STRATEGY_CENTER
+     * @param strategy 间距策略 SPACE_STRATEGY_ALL、SPACE_STRATEGY_CENTER
      * @param drawable 间距绘制的内容
      */
-    public void setAverageRowItemSpace(float space, int strategy, Drawable drawable) {
+    public void setItemSpaceInRow(int space, int strategy, Drawable drawable) {
         if (mItemSpaceDecoration == null) {
-            mItemSpaceDecoration = new AverageRowItemSpaceDecoration();
+            mItemSpaceDecoration = new ItemSpaceInRowDecoration();
             getRecyclerView().addItemDecoration(mItemSpaceDecoration);
         }
 
-        mItemSpaceDecoration.averageSpace = DisplayUtils.dp2px(getRecyclerView().getContext(), space);
-        mItemSpaceDecoration.averageStrategy = strategy;
+        mItemSpaceDecoration.itemSpace = space;
+        mItemSpaceDecoration.spaceStrategy = strategy;
         mItemSpaceDecoration.spaceDrawable = drawable;
     }
 }
