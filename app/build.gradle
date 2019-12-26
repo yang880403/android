@@ -27,7 +27,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':uikit')
     implementation project(path: ':component')
-    implementation project(path: ':foundation')
     implementation project(path: ':navigator')
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
