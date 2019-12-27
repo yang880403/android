@@ -16,6 +16,11 @@ import androidx.annotation.NonNull;
 
 public class MediaFetcher {
     private final static String TAG = "MediaFetcher";
+
+    void fetchImage() {
+        
+    }
+
     private final String[] projection = new String[]{
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media._ID
