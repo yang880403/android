@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.stepone.component.image.MediaFetcher;
 import com.stepone.uikit.view.tableview.ClazzViewModel;
 import com.stepone.uikit.view.tableview.GridRecyclerViewAdapter;
 import com.stepone.uikit.view.tableview.ResViewModel;
@@ -121,10 +122,12 @@ public class FirstFragment extends BaseFragment {
                     TestVM testVM = (TestVM) viewModel;
                     Toast.makeText(getContext(), "TAP item at index "+testVM.getPayload(), Toast.LENGTH_SHORT).show();
 //                    buildDatasource();
-                    mAdapter.remove(viewModel);
+//                    mAdapter.remove(viewModel);
+                    new MediaFetcher().fetch(getSTActivity());
                 }
 
             });
+
             vm.bottomDividerHieght = 1;
             vm.bottomDividerLeftInset = 1;
             list.add(vm);

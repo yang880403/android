@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ysl.stepone">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="READ_MEDIA_IMAGES" />
+
     <application
         android:name="com.ysl.stepone.STApplication"
         android:allowBackup="true"
